@@ -1,9 +1,9 @@
 [
   { "order": 1, "name": "Home", "href": "/home", "icon": "home", "forMobile": true },
-  { "order": 2, "name": "Leaderboard", "href": "/leaderboard", "icon": "trophy", "forMobile": true },
+  { "order": 2, "name": "Leaderboard", "href": "/leaderboard", "icon": "trophy", "forMobile": false },
   { "order": 3, "name": "Add Drink", "href": "/add", "icon": "plus", "isCenter": true, "forMobile": true },
   { "order": 4, "name": "Friends", "href": "/friends", "icon": "users", "forMobile": true }, 
-  { "order": 5, "name": "Drinks", "href": "/drinks", "icon": "drink", "forMobile": false },
+  { "order": 5, "name": "Drinks", "href": "/drinks", "icon": "drink", "forMobile": true },
   { "order": 6, "name": "History", "href": "/history", "icon": "history", "forMobile": false },
   { "order": 100, "name": "Profile", "href": "/profile", "icon": "user", "isProfile": true, "forMobile": true }
 ]

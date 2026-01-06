@@ -4,16 +4,29 @@ import { Friend, FriendsFeed, Group } from "../models/friend-models"
 import { DrinkSession } from "../models/history-models"
 import { LeaderboardEntry } from "../models/leaderboard-models"
 import { MenuTabModel } from "../models/menu-tab-models"
+import { DrinkModel } from "@/models/drinks-models"
 import friendsData from "../data/friends.json"
 import friendsGroupsData from "../data/friends-groups.json"
 import friendsFeedData from "../data/friends-feed.json"
-import drinksData from "../data/favorite-drinks.json"
+import favoriteDrinksData from "../data/favorite-drinks.json"
 import historyData from "../data/history.json"
 import leaderboardData from "../data/leaderboard.json"
 import menuData from "../data/menu.json"
+import drinksData from "../data/drinks.json"
+
+export const getDrinksCatalog = (): DrinkModel[] => {
+  return drinksData.map(item => ({
+    id: Number(item.id),
+    name: String(item.name),
+    category: String(item.category) as DrinkModel["category"],
+    alcoholic: Boolean(item.alcoholic),
+    rating: Number(item.rating),
+    description: String(item.description)
+  }))
+}
 
 export const getFavouriteDrinks = (): FavoriteDrinkModel[] => {
-  return drinksData.map(item => ({
+  return favoriteDrinksData.map(item => ({
     id: Number(item.id),
     name: String(item.name),
     type: String(item.type),

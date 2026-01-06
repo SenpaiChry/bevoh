@@ -12,6 +12,7 @@ import LeaderboardPage from "./components/Leaderboard";
 import FriendsPage from "./components/Friends";
 import HistoryPage from "./components/History";
 import MenuMobile from "./components/MenuMobile";
+import MenuDrinksPage from "./components/DrinkCatalogue";
 
 const queryClient = new QueryClient();
 
@@ -51,7 +52,7 @@ const App = () => (
             {/* <Route path="/drink/:id" element={<ProducDetail />} /> */}
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/profile" element={<ProfilePage totalDrinks={3} />} />
-            {/* <Route path="/drinks" element={<Drinks />} /> */}
+            <Route path="/drinks" element={<MenuDrinksPage />} />
             <Route path="/friends" element={<FriendsPage />} />
 
             <Route path="*" element={<NotFound />} />
