@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Guinness",
+    "type": "Stout • 4.2%",
+    "image": "/assets/drinks/guinness-beer-dark-stout-glass.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Margarita",
+    "type": "Cocktail • Tequila",
+    "image": "/assets/drinks/margarita-cocktail-lime-glass.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Mojito",
+    "type": "Cocktail • Rum",
+    "image": "/assets/drinks/fresh-mojito-cocktail-with-mint-leaves.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Mojito Lime",
+    "type": "Cocktail • Rum & Lime",
+    "image": "/assets/drinks/fresh-mojito-cocktail-with-mint-leaves-and-lime.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Espresso Martini",
+    "type": "Cocktail • Vodka & Coffee",
+    "image": "/assets/drinks/espresso-martini-cocktail-with-coffee-beans.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Old Fashioned",
+    "type": "Cocktail • Whiskey",
+    "image": "/assets/drinks/old-fashioned-whiskey-cocktail.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Old Fashioned Orange",
+    "type": "Cocktail • Whiskey & Orange",
+    "image": "/assets/drinks/old-fashioned-whiskey-cocktail-with-orange.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Classic Old Fashioned",
+    "type": "Cocktail • Bourbon",
+    "image": "/assets/drinks/classic-old-fashioned-whiskey-cocktail-with-orange.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Pink Spritz",
+    "type": "Cocktail • Sparkling Wine",
+    "image": "/assets/drinks/pink-spritz-cocktail-in-wine-glass.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Pink Berry",
+    "type": "Cocktail • Vodka & Berries",
+    "image": "/assets/drinks/pink-berry-cocktail-with-raspberries-in-elegant-gl.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Red Wine",
+    "type": "Wine • Pinot Noir",
+    "image": "/assets/drinks/pinot-noir-red-wine-glass.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Purple Berry",
+    "type": "Cocktail • Berries",
+    "image": "/assets/drinks/purple-berry-cocktail-with-blackberries.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Purple Berry Glass",
+    "type": "Cocktail • Blackberry",
+    "image": "/assets/drinks/purple-berry-cocktail-with-blackberries-in-glass.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Lavender Gin Fizz",
+    "type": "Cocktail • Gin",
+    "image": "/assets/drinks/purple-lavender-gin-fizz-cocktail-with-foam-in-ele.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Blue Lagoon",
+    "type": "Cocktail • Vodka",
+    "image": "/assets/drinks/blue-lagoon-cocktail-with-tropical-beach.jpg"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "user": {
+      "name": "Sara Conti",
+      "avatar": "/assets/avatars/female-avatar-2.png"
+    },
+    "action": "just had",
+    "drink": "Gin Tonic",
+    "drinkIcon": "🍸",
+    "location": "Sky Lounge",
+    "time": "2m ago",
+    "likes": 3,
+    "comments": 1,
+    "liked": true
+  },
+  {
+    "id": 2,
+    "user": {
+      "name": "Marco Rossi",
+      "avatar": "/assets/avatars/male-avatar-1.png"
+    },
+    "action": "is enjoying",
+    "drink": "Aperol Spritz",
+    "drinkIcon": "🍹",
+    "location": "Bar Roma",
+    "time": "5m ago",
+    "likes": 5,
+    "comments": 2
+  },
+  {
+    "id": 3,
+    "user": {
+      "name": "Giulia Bianchi",
+      "avatar": "/assets/avatars/female-avatar-1.png"
+    },
+    "action": "ordered",
+    "drink": "Mojito",
+    "drinkIcon": "🍸",
+    "time": "12m ago",
+    "likes": 2,
+    "comments": 0
+  },
+  {
+    "id": 4,
+    "user": {
+      "name": "Elena Greco",
+      "avatar": "/assets/avatars/female-avatar-1.png"
+    },
+    "action": "is on drink #3",
+    "drink": "Negroni",
+    "drinkIcon": "🥃",
+    "location": "Caffè Milano",
+    "time": "20m ago",
+    "likes": 8,
+    "comments": 3
+  }
+]

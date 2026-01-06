@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Marco Rossi",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksTonight": 4,
+    "status": "drinking",
+    "lastDrink": "Aperol Spritz",
+    "lastDrinkTime": "5m ago"
+  },
+  {
+    "id": 2,
+    "name": "Giulia Bianchi",
+    "avatar": "/assets/avatars/female-avatar-1.png",
+    "drinksTonight": 2,
+    "status": "drinking",
+    "lastDrink": "Mojito",
+    "lastDrinkTime": "12m ago"
+  },
+  {
+    "id": 3,
+    "name": "Luca Ferrari",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksTonight": 0,
+    "status": "online"
+  },
+  {
+    "id": 4,
+    "name": "Sara Conti",
+    "avatar": "/assets/avatars/female-avatar-2.png",
+    "drinksTonight": 5,
+    "status": "drinking",
+    "lastDrink": "Gin Tonic",
+    "lastDrinkTime": "2m ago"
+  },
+  {
+    "id": 5,
+    "name": "Andrea Marino",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksTonight": 0,
+    "status": "offline"
+  },
+  {
+    "id": 6,
+    "name": "Elena Greco",
+    "avatar": "/assets/avatars/female-avatar-1.png",
+    "drinksTonight": 3,
+    "status": "drinking",
+    "lastDrink": "Negroni",
+    "lastDrinkTime": "20m ago"
+  }
+]

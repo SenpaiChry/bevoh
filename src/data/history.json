@@ -1,0 +1,71 @@
+[
+  {
+    "id": 1,
+    "date": "2024-12-28",
+    "dateLabel": "Yesterday",
+    "location": "Sky Lounge",
+    "totalDrinks": 6,
+    "friends": [
+      { "name": "Marco", "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "name": "Giulia", "avatar": "/assets/avatars/female-avatar-1.png" }
+    ],
+    "drinks": [
+      { "name": "Aperol Spritz", "icon": "🍹", "time": "21:30", "quantity": 2 },
+      { "name": "Gin Tonic", "icon": "🍸", "time": "22:15", "quantity": 2 },
+      { "name": "Mojito", "icon": "🍸", "time": "23:00", "quantity": 1 },
+      { "name": "Beer", "icon": "🍺", "time": "23:45", "quantity": 1 }
+    ],
+    "duration": "4h 30m",
+    "highlights": "Best night this week!"
+  },
+  {
+    "id": 2,
+    "date": "2024-12-26",
+    "dateLabel": "Thursday",
+    "location": "Bar Roma",
+    "totalDrinks": 4,
+    "friends": [{ "name": "Sara", "avatar": "/assets/avatars/female-avatar-2.png" }],
+    "drinks": [
+      { "name": "Negroni", "icon": "🥃", "time": "20:00", "quantity": 2 },
+      { "name": "Wine", "icon": "🍷", "time": "21:30", "quantity": 2 }
+    ],
+    "duration": "3h"
+  },
+  {
+    "id": 3,
+    "date": "2024-12-24",
+    "dateLabel": "Christmas Eve",
+    "location": "Home",
+    "totalDrinks": 8,
+    "friends": [
+      { "name": "Marco", "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "name": "Giulia", "avatar": "/assets/avatars/female-avatar-1.png" },
+      { "name": "Sara", "avatar": "/assets/avatars/female-avatar-2.png" },
+      { "name": "Luca", "avatar": "/assets/avatars/male-avatar-1.png" }
+    ],
+    "drinks": [
+      { "name": "Prosecco", "icon": "🍾", "time": "19:00", "quantity": 3 },
+      { "name": "Wine", "icon": "🍷", "time": "20:30", "quantity": 3 },
+      { "name": "Limoncello", "icon": "🍋", "time": "23:00", "quantity": 2 }
+    ],
+    "duration": "6h",
+    "highlights": "Family party!"
+  },
+  {
+    "id": 4,
+    "date": "2024-12-21",
+    "dateLabel": "Last Saturday",
+    "location": "Club Neon",
+    "totalDrinks": 5,
+    "friends": [
+      { "name": "Marco", "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "name": "Elena", "avatar": "/assets/avatars/female-avatar-1.png" }
+    ],
+    "drinks": [
+      { "name": "Vodka Soda", "icon": "🍸", "time": "23:00", "quantity": 2 },
+      { "name": "Shot", "icon": "🥃", "time": "00:30", "quantity": 2 },
+      { "name": "Beer", "icon": "🍺", "time": "01:30", "quantity": 1 }
+    ],
+    "duration": "4h"
+  }
+]

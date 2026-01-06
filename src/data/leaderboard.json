@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "rank": 1,
+    "name": "Sara Conti",
+    "avatar": "/assets/avatars/female-avatar-2.png",
+    "drinksWeek": 28,
+    "drinksMonth": 112
+  },
+  {
+    "id": 2,
+    "rank": 2,
+    "name": "Marco Rossi",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksWeek": 24,
+    "drinksMonth": 98
+  },
+  {
+    "id": 3,
+    "rank": 3,
+    "name": "Elena Greco",
+    "avatar": "/assets/avatars/female-avatar-1.png",
+    "drinksWeek": 22,
+    "drinksMonth": 89
+  },
+  {
+    "id": 4,
+    "rank": 4,
+    "name": "Alex Johnson",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksWeek": 18,
+    "drinksMonth": 72,
+    "isCurrentUser": true
+  },
+  {
+    "id": 5,
+    "rank": 5,
+    "name": "Giulia Bianchi",
+    "avatar": "/assets/avatars/female-avatar-1.png",
+    "drinksWeek": 15,
+    "drinksMonth": 65
+  },
+  {
+    "id": 6,
+    "rank": 6,
+    "name": "Luca Ferrari",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksWeek": 12,
+    "drinksMonth": 48
+  },
+  {
+    "id": 7,
+    "rank": 7,
+    "name": "Andrea Marino",
+    "avatar": "/assets/avatars/male-avatar-1.png",
+    "drinksWeek": 8,
+    "drinksMonth": 35
+  }
+]

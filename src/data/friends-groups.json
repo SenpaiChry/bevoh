@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "name": "Friday Night Crew",
+    "members": [
+      { "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "avatar": "/assets/avatars/female-avatar-1.png" },
+      { "avatar": "/assets/avatars/female-avatar-2.png" }
+    ],
+    "activeDrinks": 12,
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "name": "College Friends",
+    "members": [
+      { "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "avatar": "/assets/avatars/female-avatar-1.png" }
+    ],
+    "activeDrinks": 0,
+    "isActive": false
+  },
+  {
+    "id": 3,
+    "name": "Work Happy Hour",
+    "members": [
+      { "avatar": "/assets/avatars/female-avatar-2.png" },
+      { "avatar": "/assets/avatars/male-avatar-1.png" },
+      { "avatar": "/assets/avatars/female-avatar-1.png" },
+      { "avatar": "/assets/avatars/male-avatar-1.png" }
+    ],
+    "activeDrinks": 8,
+    "isActive": true
+  }
+]
