@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { Search, UserPlus, MoreHorizontal, Users, Plus, MapPin, Clock, Heart, MessageCircle, ChevronRight } from "lucide-react"
-import { Friend, FriendsFeed, Group } from "./models/friend-models"
+import { Friend, FriendsFeed, Group } from "../models/friend-models"
 import { getFriends, getFriendsFeed, getFriendsGroups } from "./ReadData"
 
 export default function FriendsPage() {

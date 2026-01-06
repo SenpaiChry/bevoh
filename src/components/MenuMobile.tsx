@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import profilepic from "@/assets/drinks/male-avatar-cartoon.jpg";
 import React, { useState } from "react";
-import { MenuTabModel } from "./models/menu-tab-models";
+import { MenuTabModel } from "../models/menu-tab-models";
 import { getMenuTabs } from "./ReadData";
 
 const MenuMobile = () => {

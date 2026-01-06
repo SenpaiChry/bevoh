@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Trophy, Medal, TrendingUp, Calendar } from "lucide-react"
-import { LeaderboardEntry } from "./models/leaderboard-models"
+import { LeaderboardEntry } from "../models/leaderboard-models"
 import React from "react"
 import { getLeaderboard } from "./ReadData"
 

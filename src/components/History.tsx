@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { MapPin, ChevronRight, Filter, Clock, TrendingUp } from "lucide-react"
-import { DrinkSession } from "./models/history-models"
+import { DrinkSession } from "../models/history-models"
 import React from "react"
 import { getHistory } from "./ReadData"
 

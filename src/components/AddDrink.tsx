@@ -4,7 +4,7 @@ import React from "react"
 import { useState, useRef } from "react"
 import { Search, Heart, Minus, Plus, Clock, Check, StickyNote } from "lucide-react"
 import { getFavouriteDrinks } from "./ReadData"
-import { FavoriteDrinkModel } from "./models/add-drink-models"
+import { FavoriteDrinkModel } from "../models/add-drink-models"
 
 interface LogDrinkPageProps {
   onLogDrink: (drink: {

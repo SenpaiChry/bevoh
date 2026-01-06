@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { MenuTabModel } from './models/menu-tab-models';
+import { MenuTabModel } from '../models/menu-tab-models';
 import { getMenuTabs } from './ReadData';
 
 import profilepic from "@/assets/drinks/male-avatar-cartoon.jpg"

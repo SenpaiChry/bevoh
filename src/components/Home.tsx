@@ -1,6 +1,8 @@
 import { Bell, RotateCcw, Trash2, MapPin } from "lucide-react"
 import SafetyCard from "./SafetyCard"
-import { DrinkLog } from "./models/home-models"
+import { DrinkLog } from "../models/home-models"
+
+import pic from "../assets/drinks/male-avatar-1.png"
 
 interface HomePageProps {
   tonightDrinks: DrinkLog[]
@@ -43,7 +45,7 @@ export default function HomePage({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-amber-200 overflow-hidden">
-              <img src="/male-avatar-cartoon.jpg" alt="User avatar" className="w-full h-full object-cover" />
+              <img src={pic} alt="User avatar" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-foreground-muted text-sm">Good Evening</p>
