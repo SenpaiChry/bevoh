@@ -21,7 +21,9 @@ export const getDrinksCatalog = (): DrinkModel[] => {
     category: String(item.category) as DrinkModel["category"],
     alcoholic: Boolean(item.alcoholic),
     rating: Number(item.rating),
-    description: String(item.description)
+    img: String(item.img),
+    description: String(item.description),
+    garnish: String(item.garnish)
   }))
 }
 

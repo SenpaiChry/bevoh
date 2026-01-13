@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useState, useRef } from "react"
-import { Search, Heart, Minus, Plus, Clock, Check, StickyNote } from "lucide-react"
+import { Search, Heart, Minus, Plus, Clock, Check, StickyNote, Sparkles } from "lucide-react"
 import { getFavouriteDrinks } from "./ReadData"
 import { FavoriteDrinkModel } from "../models/add-drink-models"
 
@@ -555,7 +555,7 @@ export default function AddDrinkPage({ onLogDrink, onBack }: LogDrinkPageProps) 
       </div>
 
       {/* LOG DRINK */}
-      <div className="fixed bottom-4 lg:bottom-6 left-0 right-0 px-4 lg:pl-68">
+      <div className="fixed bottom-20 lg:bottom-6 left-0 right-0 px-4 lg:pl-68">
         <div className="max-w-md mx-auto lg:max-w-none">
           <button
             onClick={handleLogDrink}
