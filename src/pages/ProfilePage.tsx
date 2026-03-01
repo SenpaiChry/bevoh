@@ -4,6 +4,7 @@ import { Settings, LogOut, Trophy, Calendar, ChevronRight, Flame, Star, Award, Z
 import profilepic from "@/assets/drinks/male-avatar-cartoon.jpg"
 import { UserEditModel, UserModel } from "@/models/auth-models"
 import { loadMe } from "@/controllers/UserController"
+import SafetyCard from "@/components/SafetyCard"
 
 interface Achievement {
   id: string
@@ -868,7 +869,9 @@ export default function ProfilePage() {
         </div>
       )} */}
 
-      <div className="space-y-2 mt-6">
+      <SafetyCard />
+
+      <div className="space-y-2">
         <button onClick={() => setShowLogoutConfirm(true)} className="w-full bg-red-500/10 rounded-2xl p-4 flex items-center gap-3 mt-4">
           <LogOut className="w-5 h-5 text-red-400" />
           <span className="text-red-400">Log Out</span>

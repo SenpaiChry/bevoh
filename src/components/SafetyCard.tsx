@@ -2,41 +2,11 @@ import { useState, useEffect } from "react"
 import { AlertTriangle, Clock, Car, Shield, X, ChevronDown, ChevronUp, Settings } from "lucide-react"
 import { UserModel } from "@/models/auth-models"
 
-interface SafetyCardProps {
-  totalDrinks: number
-  firstDrinkTime?: Date
-  onCallEmergency?: () => void
-}
-
 type Sesso = "maschio" | "femmina"
 type MeResponse = { ok: true; user: UserModel } | { ok: false; error: string }
 type DrinkItem = { pureAlcoholMl: number; time: string }
 
 const API_BASE = "https://bevoh.altervista.org/api"
-
-// ---- Calcolo BAC (come tuo) ----
-function calcolaBacGL(altezzaCm: number, pesoKg: number, sesso: Sesso, alcolMlPuro: number): number {
-  // 1) Massa corporea magra (Boer)
-  let lbm: number
-  if (sesso === "maschio") {
-    lbm = 0.407 * pesoKg + 0.267 * altezzaCm - 19.2
-  } else {
-    lbm = 0.252 * pesoKg + 0.473 * altezzaCm - 48.3
-  }
-
-  if (lbm <= 0 || lbm >= pesoKg) {
-    throw new Error("Dati non realistici: controlla altezza e peso nel profilo")
-  }
-
-  // 2) Acqua corporea totale (TBW)
-  const tbw = 0.73 * lbm // litri
-
-  // 3) Alcol ingerito (grammi) (densità etanolo ≈ 0.8 g/ml)
-  const alcolGrammi = alcolMlPuro * 0.8
-
-  // 4) BAC g/L
-  return alcolGrammi / tbw
-}
 
 function mapSex(sex: UserModel["Sex"]): Sesso | null {
   if (sex === "MALE") return "maschio"
@@ -68,12 +38,9 @@ function parseAnyDateTime(s: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d
 }
 
-export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergency }: SafetyCardProps) {
-  const [mlLoading, setMlLoading] = useState(false)
-  const [mlError, setMlError] = useState<string | null>(null)
+export default function SafetyCard() {
   const [hasUserEditedMl, setHasUserEditedMl] = useState(false)
   const [firstDrinkAt, setFirstDrinkAt] = useState<Date | null>(null)
-
 
   const [drinkItems, setDrinkItems] = useState<DrinkItem[]>([])
 
@@ -152,9 +119,6 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
 
     async function loadMlForSafety() {
       try {
-        setMlLoading(true)
-        setMlError(null)
-
         // scegli tu il range: 24h / week / month / all / none
         const range = "24h"
 
@@ -204,11 +168,8 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
         if (!hasUserEditedMl) {
           setAlcolMlPuro(Math.round(safeMl)) // o lascia decimali se vuoi
         }
-      } catch (e: any) {
-        if (!cancelled) setMlError(e?.message || "Errore caricamento ml")
-      } finally {
-        if (!cancelled) setMlLoading(false)
-      }
+      } catch (e: any) { }
+      finally { }
     }
 
     loadMlForSafety()
@@ -268,26 +229,6 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
 
       setCurrentBAC(bacNow)
 
-      // const bac0 = Math.max(0, calcolaBacGL(altezzaCm, pesoKg, sesso, alcolMlPuro))
-
-      // // tempo trascorso (ore) da primo drink (prop -> fallback backend)
-      // const t0 =
-      //   firstDrinkTime instanceof Date && !Number.isNaN(firstDrinkTime.getTime())
-      //     ? firstDrinkTime
-      //     : firstDrinkAt instanceof Date && !Number.isNaN(firstDrinkAt.getTime())
-      //       ? firstDrinkAt
-      //       : null
-
-      // let hoursElapsed = 0
-      // if (t0) {
-      //   hoursElapsed = Math.max(0, (Date.now() - t0.getTime()) / (1000 * 60 * 60))
-      // }
-
-      // // BAC stimato adesso = picco teorico - eliminazione nel tempo
-      // const bacNow = Math.max(0, bac0 - ELIMINATION_GL_PER_H * hoursElapsed)
-
-      // setCurrentBAC(bacNow)
-
       if (bacNow >= LEGAL_LIMIT_GL) {
         setCanDrive(false)
         const hoursToLegal = (bacNow - LEGAL_LIMIT_GL) / ELIMINATION_GL_PER_H
@@ -298,22 +239,6 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
         setCanDrive(true)
         setSoberTime(null)
       }
-
-      // const bacGL = calcolaBacGL(altezzaCm, pesoKg, sesso, alcolMlPuro)
-      // const safeBac = Math.max(0, bacGL)
-      // setCurrentBAC(safeBac)
-
-      // if (safeBac >= LEGAL_LIMIT_GL) {
-      //   setCanDrive(false)
-      //   const excess = safeBac - LEGAL_LIMIT_GL
-      //   const hoursToLegal = excess / ELIMINATION_GL_PER_H
-      //   const h = Math.floor(hoursToLegal)
-      //   const m = Math.round((hoursToLegal - h) * 60)
-      //   setSoberTime(`${h}h ${m}m`)
-      // } else {
-      //   setCanDrive(true)
-      //   setSoberTime(null)
-      // }
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Errore nel calcolo"
       setCalcError(msg)
@@ -337,7 +262,8 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
     return { label: "Molto alto", color: "bg-red-500/20 text-red-500" }
   }
 
-  const isOverLimit = totalDrinks >= drinkLimit
+  // SISTEMA
+  const isOverLimit = 0 >= drinkLimit
   const bacStatus = getBACStatus()
 
   const profileMissing = !profileLoading && (altezzaCm == null || pesoKg == null || sesso == null)
@@ -479,7 +405,7 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
             </div>
 
             {/* Drink Limit */}
-            <div className="bg-white/5 rounded-xl p-4">
+            {/* <div className="bg-white/5 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-foreground-muted">Limite Drink</span>
                 <button onClick={() => setShowLimitModal(true)} className="text-primary text-sm">
@@ -504,7 +430,7 @@ export default function SafetyCard({ totalDrinks, firstDrinkTime, onCallEmergenc
                   Hai superato il limite impostato
                 </p>
               )}
-            </div>
+            </div> */}
 
             {/* Emergency Contact */}
             {/* <div className="bg-white/5 rounded-xl p-4">
