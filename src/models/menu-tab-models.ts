@@ -8,4 +8,6 @@ export interface MenuTabModel {
     isCenter?: boolean
     isProfile?: boolean
     forMobile?: boolean
+    authentication?: boolean
+    isActive?: boolean
 }

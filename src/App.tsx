@@ -14,6 +14,9 @@ import HistoryPage from "./components/History";
 import MenuMobile from "./components/MenuMobile";
 import MenuDrinksPage from "./components/DrinkCatalogue";
 import DrinkDetailPage from "./components/DrinkDetailPage";
+import AuthPage from "./components/Auth";
+import RequireAuth from "./RequireAuth";
+import MyLogsPage from "./components/MyLogsPage";
 
 const queryClient = new QueryClient();
 
@@ -28,38 +31,24 @@ const App = () => (
         </div>
         <main className="md:mt-14">
           <Routes>
-            <Route path="/" element={<HomePage tonightDrinks={[]} totalDrinks={0} onRemoveDrink={function (id: number): void {
-              throw new Error("Function not implemented.");
-            } } onResetNight={function (): void {
-              throw new Error("Function not implemented.");
-            } } onQuickAdd={function (): void {
-              throw new Error("Function not implemented.");
-            } } />} />
-            {/* <Route path="/" element={<Home />} /> */}
-            <Route path="/home" element={<HomePage tonightDrinks={[]} totalDrinks={0} onRemoveDrink={function (id: number): void {
-              throw new Error("Function not implemented.");
-            }} onResetNight={function (): void {
-              throw new Error("Function not implemented.");
-            }} onQuickAdd={function (): void {
-              throw new Error("Function not implemented.");
-            }} />} />
-            <Route path="/leaderboard" element={<LeaderboardPage />} />
-            <Route path="/add" element={<AddDrinkPage onLogDrink={function (drink: { name: string; type: string; quantity: number; friends: string[]; time: string; location?: string; note?: string; photo?: string; }): void {
-              throw new Error("Function not implemented.");
-            }} onBack={function (): void {
-              throw new Error("Function not implemented.");
-            }} />} />
-            {/* <Route path="/login" element={<Shop />} /> */}
-            {/* <Route path="/drink/:id" element={<ProducDetail />} /> */}
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/profile" element={<ProfilePage totalDrinks={3} />} />
+            {/* auth */}
+            <Route path="/" element={<RequireAuth><HomePage /></RequireAuth>} />
+            <Route path="/leaderboard" element={<RequireAuth><LeaderboardPage /></RequireAuth>} />
+            <Route path="/add" element={<RequireAuth><AddDrinkPage /></RequireAuth>} />
+            <Route path="/history" element={<RequireAuth><HistoryPage /></RequireAuth>} />
+            <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+            {/* <Route path="/edit-profile" element={<RequireAuth><ProfilePage /></RequireAuth>} /> */}
+            <Route path="/mylogs" element={<RequireAuth><MyLogsPage /></RequireAuth>} />
+            <Route path="/friends" element={<RequireAuth><FriendsPage /></RequireAuth>} />
+
+            {/* pubbliche */}
             <Route path="/drinks" element={<MenuDrinksPage />} />
             <Route path="/drink/:id" element={<DrinkDetailPage />} />
-            <Route path="/friends" element={<FriendsPage />} />
+            <Route path="/auth" element={<AuthPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </main>   
+        </main>
         <div className="md:hidden">
           <MenuMobile />
         </div>

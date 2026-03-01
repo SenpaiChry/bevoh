@@ -1,40 +1,14 @@
 import { Home, Trophy, PlusSquare, Users, User, Wine, History } from "lucide-react"
-import { FavoriteDrinkModel } from "../models/add-drink-models"
 import { Friend, FriendsFeed, Group } from "../models/friend-models"
 import { DrinkSession } from "../models/history-models"
 import { LeaderboardEntry } from "../models/leaderboard-models"
 import { MenuTabModel } from "../models/menu-tab-models"
-import { DrinkModel } from "@/models/drinks-models"
 import friendsData from "../data/friends.json"
 import friendsGroupsData from "../data/friends-groups.json"
 import friendsFeedData from "../data/friends-feed.json"
-import favoriteDrinksData from "../data/favorite-drinks.json"
 import historyData from "../data/history.json"
 import leaderboardData from "../data/leaderboard.json"
 import menuData from "../data/menu.json"
-import drinksData from "../data/drinks.json"
-
-export const getDrinksCatalog = (): DrinkModel[] => {
-  return drinksData.map(item => ({
-    id: Number(item.id),
-    name: String(item.name),
-    category: String(item.category) as DrinkModel["category"],
-    alcoholic: Boolean(item.alcoholic),
-    rating: Number(item.rating),
-    img: String(item.img),
-    description: String(item.description),
-    garnish: String(item.garnish)
-  }))
-}
-
-export const getFavouriteDrinks = (): FavoriteDrinkModel[] => {
-  return favoriteDrinksData.map(item => ({
-    id: Number(item.id),
-    name: String(item.name),
-    type: String(item.type),
-    image: String(item.image)
-  }))
-}
 
 export const getFriends = (): Friend[] => {
   return friendsData.map(item => ({
@@ -131,6 +105,8 @@ export const getMenuTabs = (): MenuTabModel[] => {
     isCenter: t.isCenter,
     isProfile: t.isProfile,
     forMobile: t.forMobile,
+    authentication: t.authentication,
+    isActive: t.isActive,
     icon: iconMap[t.icon as keyof typeof iconMap]
   }))
 }

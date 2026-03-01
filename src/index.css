@@ -252,4 +252,8 @@ input[type="number"] {
   .story-link:hover::after {
     @apply scale-x-100 origin-bottom-left;
   }
+
+  .input-dark {
+    @apply bg-input border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200;
+  }
 }
