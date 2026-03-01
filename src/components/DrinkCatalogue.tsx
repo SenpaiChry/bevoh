@@ -116,13 +116,6 @@ export default function MenuDrinksPage() {
     }
   }
 
-  // NOTE:
-  // This version loads drinks "a botte" (paged).
-  // API expected params:
-  // - categoryId (optional)
-  // - page (1..n)
-  // - pageSize
-  // - search (optional)
   async function getListDrink(signal?: AbortSignal, opts?: { reset?: boolean }): Promise<void> {
     const reset = !!opts?.reset
 

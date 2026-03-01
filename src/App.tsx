@@ -17,6 +17,7 @@ import DrinkDetailPage from "./components/DrinkDetailPage";
 import AuthPage from "./components/Auth";
 import RequireAuth from "./RequireAuth";
 import MyLogsPage from "./components/MyLogsPage";
+import RequireAdmin from "./RequireAdmin";
 
 const queryClient = new QueryClient();
 
@@ -31,17 +32,19 @@ const App = () => (
         </div>
         <main className="md:mt-14">
           <Routes>
-            {/* auth */}
+            {/* AUTH - USER */}
             <Route path="/" element={<RequireAuth><HomePage /></RequireAuth>} />
             <Route path="/leaderboard" element={<RequireAuth><LeaderboardPage /></RequireAuth>} />
             <Route path="/add" element={<RequireAuth><AddDrinkPage /></RequireAuth>} />
             <Route path="/history" element={<RequireAuth><HistoryPage /></RequireAuth>} />
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
-            {/* <Route path="/edit-profile" element={<RequireAuth><ProfilePage /></RequireAuth>} /> */}
             <Route path="/mylogs" element={<RequireAuth><MyLogsPage /></RequireAuth>} />
             <Route path="/friends" element={<RequireAuth><FriendsPage /></RequireAuth>} />
 
-            {/* pubbliche */}
+            {/* AUTH - ADMIN */}
+            {/* <Route path="/" element={<RequireAdmin><FriendsPage /></RequireAdmin>} /> */}
+
+            {/* PUBLICS */}
             <Route path="/drinks" element={<MenuDrinksPage />} />
             <Route path="/drink/:id" element={<DrinkDetailPage />} />
             <Route path="/auth" element={<AuthPage />} />

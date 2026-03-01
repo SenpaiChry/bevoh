@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Trophy, Medal, TrendingUp, Calendar } from "lucide-react"
 import { LeaderboardEntry } from "../models/leaderboard-models"

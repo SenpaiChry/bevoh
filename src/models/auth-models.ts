@@ -22,6 +22,7 @@ export class UserModel {
     public Bio?: string | null,
     public Sex?: "MALE" | "FEMALE" | null,
     public ImageUrl?: string | null,
+    public Role?: "USER" | "ADMIN" | null,
   ) { }
 }
 
