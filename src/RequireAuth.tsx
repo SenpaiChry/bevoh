@@ -10,7 +10,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
     queryKey: ["me"],
     queryFn: loadMe,
     retry: false,
-    staleTime: 30_000,
+    staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
 

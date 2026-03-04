@@ -7,7 +7,7 @@ export interface MenuTabModel {
     icon: LucideIcon
     isCenter?: boolean
     isProfile?: boolean
-    forMobile?: boolean
-    authentication?: boolean
-    isActive?: boolean
+    mobile?: boolean
+    auth?: boolean
+    header?: boolean
 }

@@ -104,9 +104,9 @@ export const getMenuTabs = (): MenuTabModel[] => {
     href: t.href,
     isCenter: t.isCenter,
     isProfile: t.isProfile,
-    forMobile: t.forMobile,
-    authentication: t.authentication,
-    isActive: t.isActive,
+    mobile: t.mobile,
+    auth: t.auth,
+    header: t.header,
     icon: iconMap[t.icon as keyof typeof iconMap]
   }))
 }

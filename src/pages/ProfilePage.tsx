@@ -5,6 +5,8 @@ import profilepic from "@/assets/drinks/male-avatar-cartoon.jpg"
 import { UserEditModel, UserModel } from "@/models/auth-models"
 import { loadMe } from "@/controllers/UserController"
 import SafetyCard from "@/components/SafetyCard"
+import { logout } from "@/controllers/UserController"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface Achievement {
   id: string
@@ -341,26 +343,13 @@ export default function ProfilePage() {
     };
   }, []);
 
+  const queryClient = useQueryClient()
   async function handleLogout() {
     try {
       setLogoutLoading(true)
       setLogoutError(null)
-
-      const res = await fetch(`${API_BASE}/auth/logout.php`, {
-        method: "POST",
-        credentials: "include",
-        headers: { Accept: "application/json" },
-      })
-
-      const text = await res.text()
-      if (!text.trim()) throw new Error("Empty response")
-
-      const json = JSON.parse(text)
-      if (!res.ok || json?.ok === false) {
-        throw new Error(json?.error || "Logout failed")
-      }
-
-      // redirect dopo logout
+      await logout()
+      await queryClient.invalidateQueries({ queryKey: ["me"] })
       window.location.href = "/auth"
     } catch (e: any) {
       setLogoutError(e?.message || "Errore logout")

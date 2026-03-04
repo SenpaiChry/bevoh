@@ -42,7 +42,7 @@ const App = () => (
             <Route path="/friends" element={<RequireAuth><FriendsPage /></RequireAuth>} />
 
             {/* AUTH - ADMIN */}
-            {/* <Route path="/" element={<RequireAdmin><FriendsPage /></RequireAdmin>} /> */}
+            {/* <Route path="/friends" element={<RequireAdmin><FriendsPage /></RequireAdmin>} /> */}
 
             {/* PUBLICS */}
             <Route path="/drinks" element={<MenuDrinksPage />} />
