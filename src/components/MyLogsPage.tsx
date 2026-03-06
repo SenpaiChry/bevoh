@@ -34,15 +34,6 @@ type DrinkLogsStatsResponse =
     }
     | { ok: false; error: string }
 
-function normalizeCategory(cat: string | null | undefined): "cocktail" | "beer" | "shot" | "wine" | "other" {
-    const c = (cat ?? "").trim().toLowerCase()
-    if (c.includes("cocktail")) return "cocktail"
-    if (c.includes("beer") || c.includes("birra")) return "beer"
-    if (c.includes("shot") || c.includes("shottino")) return "shot"
-    if (c.includes("wine") || c.includes("vino")) return "wine"
-    return "other"
-}
-
 type RangeKey = "24h" | "7d" | "month" | "all"
 
 const currentMonthName = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date())
@@ -240,7 +231,7 @@ export default function MyLogsPage() {
             // aggiorna anche counts (best-effort) in base alla categoria del log eliminato
             const removed = items.find((x) => x.Id === id)
             if (removed) {
-                const cat = normalizeCategory(removed.CategoryName)
+                const cat = removed.CategoryName
                 setStatsCounts((p) => ({
                     ...p,
                     [cat]: Math.max(0, Number((p as any)[cat] ?? 0) - 1),
@@ -307,7 +298,7 @@ export default function MyLogsPage() {
         } finally {
             listLoadingRef.current = false
             setListLoading(false)
-            setDidFirstFetch(true) // ✅ importante: almeno 1 fetch finito
+            setDidFirstFetch(true)
         }
     }
 
@@ -393,19 +384,16 @@ export default function MyLogsPage() {
                     if (deleteTarget) deleteDrinkLog(deleteTarget.Id)
                 }}
             />}
-            {/* Header & Navigation */}
-            <div className="flex items-center justify-between mb-6">
-                <button
-                    type="button"
-                    onClick={() => navigate("/profile")}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-white/5 hover:bg-white/10 transition text-sm font-medium text-foreground"
-                >
-                    <ChevronRight className="w-4 h-4 rotate-180" />
-                    Back
-                </button>
-                <h1 className="text-lg font-bold tracking-wide">MY LOGS</h1>
-                <div className="w-20" /> {/* Spacer per bilanciare il titolo al centro */}
-            </div>
+            {/* Header */}
+            <div className="bg-card rounded-3xl p-3 mb-4 space-y-3">
+
+                {/* TOP — back to profile */}
+                <div className="flex items-center">
+                    <button type="button" onClick={() => navigate("/profile")}
+                        className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition text-sm text-foreground">
+                        ← Back to profile
+                    </button>
+                </div>
 
             {/* Drink Summary riprogettato (Simile al Widget) */}
             <div className="bg-card rounded-3xl p-5 mb-6 border border-white/5 shadow-lg">
@@ -482,22 +470,15 @@ export default function MyLogsPage() {
             {/* List */}
             <div className="space-y-4">
                 {items.map((it) => {
-                    const cat = normalizeCategory(it.CategoryName)
                     return (
-                        <div key={it.Id} className="bg-card rounded-2xl border border-white/5 flex flex-col overflow-hidden shadow-sm transition-all hover:bg-white/[0.02]">
-                            
-                            {/* Dati Principali (Lettura) */}
-                            <div className="p-4 flex gap-4">
-                                {/* Avatar */}
-                                <div className="w-16 h-16 rounded-2xl bg-black/20 border border-white/5 overflow-hidden flex items-center justify-center shrink-0">
-                                    {it.DrinkImageUrl ? (
-                                        <img src={it.DrinkImageUrl} alt={it.DrinkName ?? "Drink"} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="text-[10px] font-bold text-foreground-muted uppercase tracking-widest">
-                                            {cat}
-                                        </div>
-                                    )}
-                                </div>
+                        <div key={it.Id} className="bg-card rounded-2xl p-3 flex gap-3">
+                            <div className="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center shrink-0">
+                                {it.DrinkImageUrl ? (
+                                    <img src={it.DrinkImageUrl} alt={it.DrinkName ?? "Drink"} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="text-xs text-foreground-muted">{it.CategoryName}</div>
+                                )}
+                            </div>
 
                                 {/* Info */}
                                 <div className="flex-1 min-w-0 flex flex-col justify-center">

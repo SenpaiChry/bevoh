@@ -1,10 +1,10 @@
 [
-  { "order": 1, "name": "Home", "href": "/", "icon": "home", "forMobile": true, "authentication": true, "isActive": true },
-  { "order": 2, "name": "Leaderboard", "href": "/leaderboard", "icon": "trophy", "forMobile": false, "authentication": true, "isActive": false },
-  { "order": 3, "name": "Drinks", "href": "/drinks", "icon": "drink", "forMobile": true, "authentication": false, "isActive": true },
-  { "order": 6, "name": "History", "href": "/history", "icon": "history", "forMobile": false, "authentication": true, "isActive": false },
-  { "order": 50, "name": "Add Drink", "href": "/add", "icon": "plus", "isCenter": true, "forMobile": true, "authentication": true, "isActive": true },
-  { "order": 60, "name": "Friends", "href": "/friends", "icon": "users", "forMobile": true, "authentication": true, "isActive": true },
-  { "order": 70, "name": "Login", "href": "/auth", "icon": "users", "forMobile": true, "authentication": false, "isActive": true },
-  { "order": 100, "name": "Profile", "href": "/profile", "icon": "user", "isProfile": true, "forMobile": true, "authentication": true, "isActive": true }
+  { "order": 1,   "name": "Home",         "href": "/",            "icon": "home",   "mobile": true,   "auth": true,   "header": false },
+  { "order": 2,   "name": "Leaderboard",  "href": "/leaderboard", "icon": "trophy", "mobile": false,  "auth": true,   "header": false },
+  { "order": 3,   "name": "Drinks",       "href": "/drinks",      "icon": "drink",  "mobile": true,   "auth": false,  "header": true },
+  { "order": 6,   "name": "History",      "href": "/history",     "icon": "history","mobile": false,  "auth": true,   "header": false },
+  { "order": 50,  "name": "Add Drink",    "href": "/add",         "icon": "plus",   "mobile": true,   "auth": true,   "header": true,   "isCenter": true },
+  { "order": 60,  "name": "Friends",      "href": "/friends",     "icon": "users",  "mobile": true,   "auth": true,   "header": true },
+  { "order": 70,  "name": "Login",        "href": "/auth",        "icon": "users",  "mobile": true,   "auth": false,  "header": true },
+  { "order": 100, "name": "Profile",      "href": "/profile",     "icon": "user",   "mobile": true,   "auth": true,   "header": true,   "isProfile": true }
 ]

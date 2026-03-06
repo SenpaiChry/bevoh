@@ -5,6 +5,9 @@ import profilepic from "@/assets/drinks/male-avatar-cartoon.jpg"
 import { UserEditModel, UserModel } from "@/models/auth-models"
 import { loadMe } from "@/controllers/UserController"
 import SafetyCard from "@/components/SafetyCard"
+import { logout } from "@/controllers/UserController"
+import { useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 interface Achievement {
   id: string
@@ -165,6 +168,8 @@ const AVATAR_PRESETS = [
 
 
 export default function ProfilePage() {
+  const navigate = useNavigate()
+
   const RANGE_TABS = [
     { key: "24h", label: "24hr" },
     { key: "7d", label: "week" },
@@ -341,27 +346,14 @@ export default function ProfilePage() {
     };
   }, []);
 
+  const queryClient = useQueryClient()
   async function handleLogout() {
     try {
       setLogoutLoading(true)
       setLogoutError(null)
-
-      const res = await fetch(`${API_BASE}/auth/logout.php`, {
-        method: "POST",
-        credentials: "include",
-        headers: { Accept: "application/json" },
-      })
-
-      const text = await res.text()
-      if (!text.trim()) throw new Error("Empty response")
-
-      const json = JSON.parse(text)
-      if (!res.ok || json?.ok === false) {
-        throw new Error(json?.error || "Logout failed")
-      }
-
-      // redirect dopo logout
-      window.location.href = "/auth"
+      await logout()
+      await queryClient.invalidateQueries({ queryKey: ["me"] })
+      navigate("/auth", { replace: true })
     } catch (e: any) {
       setLogoutError(e?.message || "Errore logout")
     } finally {
@@ -795,18 +787,16 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-
-        {/* Azione (CTA) */}
-        <div className="mt-4">
+        <div className="mt-3">
           <button
             type="button"
-            onClick={() => window.location.href = "/mylogs"}
-            className="w-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all rounded-2xl p-3.5 flex items-center justify-center gap-2 group"
+            onClick={() => { navigate("/mylogs") }}
+            className="w-full bg-white/10 hover:bg-white/15 transition rounded-2xl p-3 flex items-center justify-between"
           >
-            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-              View detailed logs
-            </span>
-            <ChevronRight className="w-4 h-4 text-foreground-muted group-hover:text-primary transition-colors" />
+            <div className="text-left">
+              <p className="text-sm font-semibold text-foreground">View my logs</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-foreground-muted" />
           </button>
         </div>
       </section>

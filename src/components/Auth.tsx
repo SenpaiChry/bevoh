@@ -45,7 +45,7 @@ export default function AuthPage() {
     queryKey: ["me"],
     queryFn: () => apiJson<{ ok: true; user: any }>("/auth/me.php"),
     retry: false,
-    staleTime: 30_000,
+    staleTime: Infinity,
   })
 
   useEffect(() => {
