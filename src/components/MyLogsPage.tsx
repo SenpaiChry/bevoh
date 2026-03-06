@@ -43,14 +43,16 @@ function normalizeCategory(cat: string | null | undefined): "cocktail" | "beer" 
     return "other"
 }
 
-const RANGE_TABS = [
+type RangeKey = "24h" | "7d" | "month" | "all"
+
+const currentMonthName = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(new Date())
+
+const RANGE_TABS: { key: RangeKey; label: string }[] = [
     { key: "24h", label: "24hr" },
     { key: "7d", label: "week" },
-    { key: "month", label: "month" },
+    { key: "month", label: `month (${currentMonthName})` },
     { key: "all", label: "all time" },
-] as const
-
-type RangeKey = (typeof RANGE_TABS)[number]["key"]
+]
 
 function formatDateNice(dateLog: string) {
     const d = new Date(dateLog.replace(" ", "T"))
@@ -101,7 +103,7 @@ export default function MyLogsPage() {
     const [rangeIdx, setRangeIdx] = useState(0)
     const activeRange: RangeKey = RANGE_TABS[rangeIdx].key
 
-    const LIMIT = 2
+    const LIMIT = 10
 
     const [items, setItems] = useState<DrinkLogModel[]>([])
     const [statsTotal, setStatsTotal] = useState(0)
@@ -133,7 +135,8 @@ export default function MyLogsPage() {
 
     async function getStats(signal?: AbortSignal) {
         try {
-            const url = `${API_BASE}/drink_log/getDrinkLogsStats.php?range=${activeRange}`
+            // Aggiunto parametro &_t per bypassare la cache di AlterVista
+            const url = `${API_BASE}/drink_log/getDrinkLogsStats.php?range=${activeRange}&_t=${Date.now()}`
             const res = await fetch(url, {
                 credentials: "include",
                 headers: { Accept: "application/json" },
@@ -269,8 +272,9 @@ export default function MyLogsPage() {
             const nextPage = reset ? 1 : page
             const offset = (nextPage - 1) * LIMIT
 
-            const url = `${API_BASE}/drink_log/getDrinkLogs.php?range=${activeRange}&limit=${LIMIT}&offset=${offset}`
-
+            // Aggiunto parametro &_t per bypassare la cache
+            const url = `${API_BASE}/drink_log/getDrinkLogs.php?range=${activeRange}&limit=${LIMIT}&offset=${offset}&_t=${Date.now()}`
+            
             const res = await fetch(url, {
                 credentials: "include",
                 headers: { Accept: "application/json" },
@@ -389,162 +393,180 @@ export default function MyLogsPage() {
                     if (deleteTarget) deleteDrinkLog(deleteTarget.Id)
                 }}
             />}
-            {/* Header */}
-            <div className="bg-card rounded-3xl p-3 mb-4 space-y-3">
+            {/* Header & Navigation */}
+            <div className="flex items-center justify-between mb-6">
+                <button
+                    type="button"
+                    onClick={() => navigate("/profile")}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-white/5 hover:bg-white/10 transition text-sm font-medium text-foreground"
+                >
+                    <ChevronRight className="w-4 h-4 rotate-180" />
+                    Back
+                </button>
+                <h1 className="text-lg font-bold tracking-wide">MY LOGS</h1>
+                <div className="w-20" /> {/* Spacer per bilanciare il titolo al centro */}
+            </div>
 
-                {/* TOP — back to profile */}
-                <div className="flex items-center">
-                    <button
-                        type="button"
-                        onClick={() => navigate("/profile")}
-                        className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition text-sm text-foreground"
-                    >
-                        ← Back to profile
-                    </button>
-                </div>
-
-                {/* RANGE SWITCH */}
-                <div className="flex items-center justify-between">
-                    {/* PREV */}
+            {/* Drink Summary riprogettato (Simile al Widget) */}
+            <div className="bg-card rounded-3xl p-5 mb-6 border border-white/5 shadow-lg">
+                
+                {/* Controlli Range Temporale */}
+                <div className="flex items-center justify-between mb-6 bg-black/20 p-1 rounded-2xl">
                     <button
                         type="button"
                         onClick={() => setRangeIdx((p) => (p - 1 + RANGE_TABS.length) % RANGE_TABS.length)}
-                        className="h-9 w-9 rounded-xl bg-white/10 hover:bg-white/15 transition flex items-center justify-center"
-                        aria-label="Previous range"
+                        className="h-10 w-12 rounded-xl hover:bg-white/10 transition flex items-center justify-center"
                     >
-                        <ChevronRight className="w-4 h-4 text-foreground-muted rotate-180" />
+                        <ChevronRight className="w-5 h-5 text-foreground-muted rotate-180" />
                     </button>
-
-                    {/* LABEL */}
-                    <div className="text-center">
-                        <p className="text-xs text-foreground-muted uppercase tracking-wide">
-                            My Logs
-                        </p>
-                        <p className="text-lg font-semibold text-foreground">
-                            {RANGE_TABS[rangeIdx].label.toUpperCase()}
-                        </p>
-                    </div>
-
-                    {/* NEXT */}
+                    <p className="text-sm font-bold text-primary tracking-widest uppercase">
+                        {RANGE_TABS[rangeIdx].label}
+                    </p>
                     <button
                         type="button"
                         onClick={() => setRangeIdx((p) => (p + 1) % RANGE_TABS.length)}
-                        className="h-9 w-9 rounded-xl bg-white/10 hover:bg-white/15 transition flex items-center justify-center"
-                        aria-label="Next range"
+                        className="h-10 w-12 rounded-xl hover:bg-white/10 transition flex items-center justify-center"
                     >
-                        <ChevronRight className="w-4 h-4 text-foreground-muted" />
+                        <ChevronRight className="w-5 h-5 text-foreground-muted" />
                     </button>
                 </div>
 
-                {error && (
-                    <p className="text-xs text-red-400">{error}</p>
-                )}
+                {/* Griglia Dati */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {/* Totale Evidenziato */}
+                    <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex flex-col items-center justify-center md:col-span-1">
+                        <p className="text-sm text-primary/80 font-semibold mb-1 uppercase tracking-wider">Total Drinks</p>
+                        <p className="text-5xl font-black text-primary">{statsTotal}</p>
+                    </div>
 
+                    {/* Sottocategorie */}
+                    <div className="grid grid-cols-2 gap-3 md:col-span-2">
+                        <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center">
+                            <p className="text-2xl font-bold text-foreground">{statsCounts.cocktail}</p>
+                            <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Cocktails</p>
+                        </div>
+                        <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center">
+                            <p className="text-2xl font-bold text-foreground">{statsCounts.beer}</p>
+                            <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Beer</p>
+                        </div>
+                        <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center">
+                            <p className="text-2xl font-bold text-foreground">{statsCounts.shot}</p>
+                            <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Shots</p>
+                        </div>
+                        <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center">
+                            <p className="text-2xl font-bold text-foreground">{statsCounts.wine}</p>
+                            <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Wine</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {error && <p className="text-xs text-red-400 mt-4 text-center">{error}</p>}
             </div>
 
-            {/* Summary mini (categorie sui caricati finora) */}
-            <div className="bg-card rounded-3xl p-3 mb-4">
-                <div className="grid grid-cols-4 gap-2">
-                    <div className="bg-white/5 rounded-2xl p-3 text-center">
-                        <p className="text-xl font-bold text-foreground">{statsCounts.cocktail}</p>
-                        <p className="text-xs text-foreground-muted">Cocktails</p>
-                    </div>
-                    <div className="bg-white/5 rounded-2xl p-3 text-center">
-                        <p className="text-xl font-bold text-foreground">{statsCounts.beer}</p>
-                        <p className="text-xs text-foreground-muted">Beer</p>
-                    </div>
-                    <div className="bg-white/5 rounded-2xl p-3 text-center">
-                        <p className="text-xl font-bold text-foreground">{statsCounts.shot}</p>
-                        <p className="text-xs text-foreground-muted">Shots</p>
-                    </div>
-                    <div className="bg-white/5 rounded-2xl p-3 text-center">
-                        <p className="text-xl font-bold text-foreground">{statsCounts.wine}</p>
-                        <p className="text-xs text-foreground-muted">Wine</p>
-                    </div>
+            {/* Intestazione Lista Connessa al Range */}
+            <div className="flex items-center justify-between mb-4 px-2 mt-2">
+                <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <span className="bg-primary text-primary w-1.5 h-5 rounded-full inline-block shadow-[0_0_10px_rgba(var(--color-primary),0.5)]"></span>
+                    Log {RANGE_TABS[rangeIdx].label.toUpperCase()}
+                </h2>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-foreground-muted bg-black/20 px-3 py-1 rounded-lg border border-white/5">
+                        {statsTotal} {statsTotal === 1 ? 'drink trovato' : 'drink trovati'}
+                    </span>
+                    <span className="text-[10px] font-medium text-foreground-muted/50 uppercase tracking-wider hidden sm:inline-block">
+                        (Max {LIMIT} per pagina)
+                    </span>
                 </div>
             </div>
 
             {/* List */}
-            <div className="space-y-2">
+            <div className="space-y-4">
                 {items.map((it) => {
                     const cat = normalizeCategory(it.CategoryName)
                     return (
-                        <div key={it.Id} className="bg-card rounded-2xl p-3 flex gap-3">
-                            <div className="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center shrink-0">
-                                {it.DrinkImageUrl ? (
-                                    <img src={it.DrinkImageUrl} alt={it.DrinkName ?? "Drink"} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="text-xs text-foreground-muted">{cat}</div>
-                                )}
-                            </div>
+                        <div key={it.Id} className="bg-card rounded-2xl border border-white/5 flex flex-col overflow-hidden shadow-sm transition-all hover:bg-white/[0.02]">
+                            
+                            {/* Dati Principali (Lettura) */}
+                            <div className="p-4 flex gap-4">
+                                {/* Avatar */}
+                                <div className="w-16 h-16 rounded-2xl bg-black/20 border border-white/5 overflow-hidden flex items-center justify-center shrink-0">
+                                    {it.DrinkImageUrl ? (
+                                        <img src={it.DrinkImageUrl} alt={it.DrinkName ?? "Drink"} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="text-[10px] font-bold text-foreground-muted uppercase tracking-widest">
+                                            {cat}
+                                        </div>
+                                    )}
+                                </div>
 
-                            <div className="flex-1 min-w-0">
-                                <div className="flex flex-col gap-1">
-                                    {/* ROW 1 — mobile: name + qty + buttons */}
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="text-foreground font-semibold truncate flex-1">
+                                {/* Info */}
+                                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                    <div className="flex items-start justify-between gap-2">
+                                        <p className="text-foreground font-semibold truncate text-lg">
                                             {it.DrinkName ?? "Drink"}
                                         </p>
-
-                                        <div className="flex items-center gap-2 shrink-0">
-                                            {Number(it.Quantity ?? 0) > 1 && (
-                                                <p className="text-foreground font-bold whitespace-nowrap">
-                                                    x{Number(it.Quantity)}
-                                                </p>
-                                            )}
-
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setUpdateError(null)
-                                                    setEditTarget(it)
-                                                }}
-                                                className="h-8 w-8 rounded-lg bg-white/10 hover:bg-white/15 transition flex items-center justify-center"
-                                                title="Edit log"
-                                            >
-                                                <Pencil className="w-3.5 h-3.5 text-foreground-muted" />
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setDeleteError(null)
-                                                    setDeleteTarget(it)
-                                                }}
-                                                className="h-8 w-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition flex items-center justify-center"
-                                                title="Delete log"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5 text-red-400" />
-                                            </button>
-                                        </div>
+                                        {Number(it.Quantity ?? 0) > 1 && (
+                                            <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-1 rounded-md shrink-0">
+                                                x{Number(it.Quantity)}
+                                            </span>
+                                        )}
                                     </div>
-
-                                    {/* ROW 2 — category + date */}
-                                    <p className="text-xs text-foreground-muted truncate">
-                                        {it.CategoryName ?? "Unknown category"} • {formatDateNice(it.DateLog)}
+                                    <p className="text-xs text-foreground-muted mt-1">
+                                        {it.CategoryName ?? "Unknown"} • {formatDateNice(it.DateLog)}
                                     </p>
-
-                                    {/* NOTES */}
+                                    
+                                    {/* Notes */}
                                     {it.Notes && (
-                                        <p className="text-xs text-foreground-muted break-words">
-                                            {it.Notes}
+                                        <p className="text-sm text-foreground-muted/80 mt-3 bg-black/20 p-2.5 rounded-xl border border-white/5 italic line-clamp-2">
+                                            "{it.Notes}"
                                         </p>
                                     )}
                                 </div>
+                            </div>
+
+                            {/* Bottom Action Bar (Interazione Sicura) */}
+                            <div className="grid grid-cols-2 border-t border-white/5 bg-black/10 divide-x divide-white/5">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setUpdateError(null)
+                                        setEditTarget(it)
+                                    }}
+                                    className="py-3 flex items-center justify-center gap-2 text-sm font-medium text-foreground-muted hover:text-foreground hover:bg-white/5 transition-colors"
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                    Modifica
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setDeleteError(null)
+                                        setDeleteTarget(it)
+                                    }}
+                                    className="py-3 flex items-center justify-center gap-2 text-sm font-medium text-red-400/70 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Elimina
+                                </button>
                             </div>
                         </div>
                     )
                 })}
 
                 {didFirstFetch && !listLoading && items.length === 0 && (
-                    <div className="bg-card rounded-2xl p-4 text-center text-sm text-foreground-muted">
-                        No logs in this range.
+                    <div className="bg-card rounded-2xl p-8 border border-white/5 text-center flex flex-col items-center justify-center">
+                        <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-3">
+                            <span className="text-xl opacity-50">🍹</span>
+                        </div>
+                        <p className="text-foreground font-medium">Nessun drink registrato</p>
+                        <p className="text-sm text-foreground-muted mt-1">Non hai log per questo periodo temporale.</p>
                     </div>
                 )}
 
                 {!didFirstFetch && (
-                    <div className="bg-card rounded-2xl p-4 text-center text-sm text-foreground-muted">
-                        Loading logs...
+                    <div className="bg-card rounded-2xl p-8 border border-white/5 text-center flex flex-col items-center justify-center animate-pulse">
+                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p className="text-sm text-foreground-muted">Caricamento log...</p>
                     </div>
                 )}
 

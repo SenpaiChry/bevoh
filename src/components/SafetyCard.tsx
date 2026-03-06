@@ -198,7 +198,7 @@ export default function SafetyCard() {
         setCalcError("Completa altezza, peso e sesso nel profilo per calcolare il BAC.")
         return
       }
-      // 1) LBM + TBW (come in calcolaBacGL ma qui ci serve TBW per sommare per drink)
+
       const lbm =
         sesso === "maschio"
           ? 0.407 * pesoKg + 0.267 * altezzaCm - 19.2
@@ -210,28 +210,48 @@ export default function SafetyCard() {
 
       const tbw = 0.73 * lbm // litri
 
+      // 1. Validazione e ordinamento cronologico (dal più vecchio al più recente)
+      const validDrinks = drinkItems
+        .map(it => {
+          const ml = Number(String((it as any).pureAlcoholMl ?? 0).replace(",", "."))
+          const d = parseAnyDateTime(String((it as any).time ?? ""))
+          return { ml, time: d ? d.getTime() : 0 }
+        })
+        .filter(it => Number.isFinite(it.ml) && it.ml > 0 && it.time > 0)
+        .sort((a, b) => a.time - b.time)
+
+      if (validDrinks.length === 0) {
+        setCurrentBAC(0)
+        setSoberTime(null)
+        setCanDrive(true)
+        return
+      }
+
+      // 2. Calcolo progressivo del metabolismo epatico
+      let bac = 0
+      let lastDrinkTime = validDrinks[0].time
       const now = Date.now()
 
-      const bacNow = drinkItems.reduce((sum, it) => {
-        const ml = Number(String((it as any).pureAlcoholMl ?? 0).replace(",", "."))
-        if (!Number.isFinite(ml) || ml <= 0) return sum
+      for (const drink of validDrinks) {
+        // Applica il decadimento avvenuto *esclusivamente* tra il drink precedente e questo
+        const hoursPassed = Math.max(0, (drink.time - lastDrinkTime) / (1000 * 60 * 60))
+        bac = Math.max(0, bac - ELIMINATION_GL_PER_H * hoursPassed)
 
-        const d = parseAnyDateTime(String((it as any).time ?? ""))
-        if (!d) return sum
+        // Aggiungi la nuova dose di alcol nel sangue
+        bac += (drink.ml * 0.8) / tbw
 
-        const hours = Math.max(0, (now - d.getTime()) / (1000 * 60 * 60))
+        lastDrinkTime = drink.time
+      }
 
-        const bac0 = (ml * 0.8) / tbw
-        const bac = Math.max(0, bac0 - ELIMINATION_GL_PER_H * hours)
+      // 3. Applica il decadimento dal momento dell'ultimo drink fino al momento attuale (now)
+      const hoursSinceLastDrink = Math.max(0, (now - lastDrinkTime) / (1000 * 60 * 60))
+      bac = Math.max(0, bac - ELIMINATION_GL_PER_H * hoursSinceLastDrink)
 
-        return sum + bac
-      }, 0)
+      setCurrentBAC(bac)
 
-      setCurrentBAC(bacNow)
-
-      if (bacNow >= LEGAL_LIMIT_GL) {
+      if (bac >= LEGAL_LIMIT_GL) {
         setCanDrive(false)
-        const hoursToLegal = (bacNow - LEGAL_LIMIT_GL) / ELIMINATION_GL_PER_H
+        const hoursToLegal = (bac - LEGAL_LIMIT_GL) / ELIMINATION_GL_PER_H
         const h = Math.floor(hoursToLegal)
         const m = Math.round((hoursToLegal - h) * 60)
         setSoberTime(`${h}h ${m}m`)
@@ -270,198 +290,137 @@ export default function SafetyCard() {
 
   return (
     <>
-      <div className={`bg-card rounded-2xl overflow-hidden transition-all ${isOverLimit ? "ring-2 ring-red-500/50" : ""}`}>
+      <div className="bg-card rounded-2xl overflow-hidden transition-all border border-white/5">
+        
         {/* Collapsed View */}
-        <button onClick={() => setIsExpanded(!isExpanded)} className="w-full p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isOverLimit ? "bg-red-500/20" : "bg-primary/20"}`}>
-              <Shield className={`w-5 h-5 ${isOverLimit ? "text-red-500" : "text-primary"}`} />
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)} 
+          aria-expanded={isExpanded}
+          className="w-full p-4 flex items-center justify-between group hover:bg-white/[0.02] transition-colors"
+        >
+          <div className="flex items-center gap-4">
+            {/* Icona neutra: non ruba l'attenzione dai dati veri */}
+            <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 group-hover:bg-white/10 transition-colors">
+              <Shield className="w-6 h-6 text-foreground-muted" />
             </div>
+            
+            {/* Informazioni testuali (Queste mantengono i loro colori dinamici) */}
             <div className="text-left">
-              <p className="font-medium text-foreground">Safety Status</p>
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-0.5 rounded-full text-xs ${bacStatus.color}`}>{bacStatus.label}</span>
-                {isOverLimit && <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-500">Over Limit</span>}
+              <h3 className="font-semibold text-foreground">Safety Status</h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className={`text-sm font-medium ${bacStatus.color.split(' ')[1]}`}>
+                  {bacStatus.label}
+                </span>
+                <span className="text-foreground-muted text-xs">•</span>
+                <span className="text-foreground-muted text-sm font-mono">{currentBAC.toFixed(2)} g/L</span>
               </div>
             </div>
           </div>
+
+          {/* Avvisi critici e Controlli (Unici elementi che si accendono di rosso) */}
           <div className="flex items-center gap-3">
             {!canDrive && (
-              <div className="flex items-center gap-1 text-orange-400">
-                <Car className="w-4 h-4" />
-                <X className="w-3 h-3" />
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 shadow-sm">
+                <Car className="w-4 h-4 text-red-500" />
+                <span className="text-xs font-bold text-red-500 uppercase tracking-wider hidden sm:inline-block">
+                  Non guidare
+                </span>
               </div>
             )}
-            {isExpanded ? <ChevronUp className="w-5 h-5 text-foreground-muted" /> : <ChevronDown className="w-5 h-5 text-foreground-muted" />}
+            <div className="p-1 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+              {isExpanded ? <ChevronUp className="w-5 h-5 text-foreground-muted" /> : <ChevronDown className="w-5 h-5 text-foreground-muted" />}
+            </div>
           </div>
         </button>
 
         {/* Expanded View */}
         {isExpanded && (
           <div className="px-4 pb-4 space-y-4 border-t border-white/5 pt-4">
-            {/* Profilo (read-only) + input ml */}
-            <div className="bg-white/5 rounded-xl p-4 space-y-3">
-              <p className="text-sm text-foreground-muted">Dati profilo (solo lettura)</p>
 
-              {profileLoading && <p className="text-xs text-foreground-muted">Caricamento profilo...</p>}
-              {!profileLoading && profileError && <p className="text-xs text-red-400">{profileError}</p>}
-
-              {!profileLoading && !profileError && (
-                <>
-                  <div className="grid grid-cols-4 gap-2 text-xs">
-                    <div className="rounded-lg bg-black/20 p-2">
-                      <p className="text-foreground-muted">Altezza</p>
-                      <p className="text-foreground font-medium">{altezzaCm ?? "—"}</p>
-                    </div>
-
-                    <div className="rounded-lg bg-black/20 p-2">
-                      <p className="text-foreground-muted">Peso</p>
-                      <p className="text-foreground font-medium">{pesoKg ?? "—"}</p>
-                    </div>
-
-                    <div className="rounded-lg bg-black/20 p-2">
-                      <p className="text-foreground-muted">Sesso</p>
-                      <p className="text-foreground font-medium">{sesso ?? "—"}</p>
-                    </div>
-
-                    <div className="rounded-lg bg-black/20 p-2">
-                      <p className="text-foreground-muted">Alcol puro (ml)</p>
-                      <input
-                        type="number"
-                        value={alcolMlPuro}
-                        onChange={(e) => {
-                          setHasUserEditedMl(true)
-                          setAlcolMlPuro(Number(e.target.value))
-                        }}
-                        className="mt-1 w-full bg-transparent text-foreground font-medium outline-none"
-                        min={0}
-                        step={1}
-                      />
-                    </div>
-                  </div>
-
-                  {profileMissing && (
-                    <p className="text-xs text-yellow-400 flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3" />
-                      Inserisci altezza, peso e sesso in “Edit Profile” per abilitare il calcolo.
-                    </p>
-                  )}
-                </>
-              )}
-
-              {calcError && (
-                <p className="text-xs text-red-400 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3" />
-                  {calcError}
-                </p>
-              )}
-            </div>
-
-            {/* BAC Meter */}
-            <div className="bg-white/5 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-foreground-muted">Tasso alcolemico stimato</span>
-                <span className={`text-2xl font-bold ${getBACColor()}`}>{currentBAC.toFixed(2)} g/L</span>
+            {/* 1. BAC Meter (Priorità Alta) */}
+            <div className="bg-black/20 rounded-xl p-4 border border-white/5">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-foreground-muted">Tasso alcolemico stimato</span>
+                <span className={`text-3xl font-bold tracking-tight ${getBACColor()}`}>
+                  {currentBAC.toFixed(2)} <span className="text-lg font-medium opacity-70">g/L</span>
+                </span>
               </div>
 
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-3 bg-black/40 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className={`h-full rounded-full transition-all ${currentBAC < 0.5 ? "bg-primary" : currentBAC < 0.8 ? "bg-orange-400" : "bg-red-500"}`}
-                  style={{ width: `${Math.min((currentBAC / 1.2) * 100, 100)}%` }}
+                  className={`h-full rounded-full transition-all duration-500 ${currentBAC < 0.5 ? "bg-primary" : currentBAC < 0.8 ? "bg-orange-400" : "bg-red-500"}`}
+                  style={{ width: `${Math.min((currentBAC / 1.5) * 100, 100)}%` }}
                 />
               </div>
 
-              <div className="flex justify-between text-[10px] text-foreground-muted mt-1">
-                <span>0</span>
-                <span>0.5</span>
+              <div className="flex justify-between text-[10px] font-medium text-foreground-muted mt-2 px-1">
+                <span>0.0</span>
+                <span className={currentBAC >= 0.5 ? "text-red-400 font-bold" : ""}>0.5 (Limite)</span>
                 <span>0.8</span>
-                <span>1.2+</span>
+                <span>1.5+</span>
               </div>
 
-              <p className="text-xs text-foreground-muted mt-2">* Stima fisiologica. Non usare per decisioni legali.</p>
+              <p className="text-[11px] text-foreground-muted/70 mt-3 text-center uppercase tracking-wider">
+                * Stima fisiologica. Non ha validità legale.
+              </p>
             </div>
 
-            {/* Sobriety Timer */}
-            {soberTime && (
-              <div className="bg-orange-500/10 rounded-xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-orange-400" />
-                  <div>
-                    <p className="font-medium text-foreground">Timer (stima)</p>
-                    <p className="text-sm text-foreground-muted">Tempo per scendere sotto 0.5 g/L</p>
-                  </div>
+            {/* 2. Actionable Alerts (Timer & Drive Status) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {soberTime && (
+                <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 flex flex-col justify-center items-center text-center">
+                  <Clock className="w-5 h-5 text-orange-400 mb-1" />
+                  <p className="text-xs text-foreground-muted">Ritorno sotto 0.5g/L tra</p>
+                  <p className="text-lg font-bold text-orange-400">{soberTime}</p>
                 </div>
-                <span className="text-xl font-bold text-orange-400">{soberTime}</span>
-              </div>
-            )}
-
-            {/* Drive Status */}
-            <div className={`rounded-xl p-4 flex items-center gap-3 ${canDrive ? "bg-primary/10" : "bg-red-500/10"}`}>
-              <Car className={`w-6 h-6 ${canDrive ? "text-primary" : "text-red-500"}`} />
-              <div>
-                <p className={`font-medium ${canDrive ? "text-primary" : "text-red-500"}`}>{canDrive ? "Sotto il limite" : "Oltre il limite"}</p>
-                <p className="text-sm text-foreground-muted">{canDrive ? "BAC stimato < 0.5 g/L" : "BAC stimato ≥ 0.5 g/L: non guidare"}</p>
-              </div>
-            </div>
-
-            {/* Drink Limit */}
-            {/* <div className="bg-white/5 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-foreground-muted">Limite Drink</span>
-                <button onClick={() => setShowLimitModal(true)} className="text-primary text-sm">
-                  <Settings className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${totalDrinks >= drinkLimit ? "bg-red-500" : totalDrinks >= drinkLimit - 2 ? "bg-yellow-400" : "bg-primary"
-                      }`}
-                    style={{ width: `${Math.min((totalDrinks / drinkLimit) * 100, 100)}%` }}
-                  />
-                </div>
-                <span className="text-foreground font-medium">
-                  {totalDrinks}/{drinkLimit}
-                </span>
-              </div>
-              {isOverLimit && (
-                <p className="text-xs text-red-400 mt-2 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3" />
-                  Hai superato il limite impostato
-                </p>
               )}
-            </div> */}
+              
+              <div className={`rounded-xl p-3 flex flex-col justify-center items-center text-center border transition-all ${!soberTime ? "sm:col-span-2" : ""} ${canDrive ? "bg-primary/10 border-primary/20" : "bg-red-500/10 border-red-500/20"}`}>
+                <Car className={`w-5 h-5 mb-1 transition-colors ${canDrive ? "text-primary" : "text-red-500"}`} />
+                <p className={`text-xs transition-colors ${canDrive ? "text-primary/70" : "text-red-500/70"}`}>Stato guida</p>
+                <p className={`text-sm font-bold transition-colors ${canDrive ? "text-primary" : "text-red-500"}`}>
+                  {canDrive ? "Consentita" : "Vietata"}
+                </p>
+              </div>
+            </div>
 
-            {/* Emergency Contact */}
-            {/* <div className="bg-white/5 rounded-xl p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="font-medium text-foreground">Contatto Emergenza</p>
-                    <p className="text-sm text-foreground-muted">{emergencyContact.name}</p>
+            {/* 3. Dati Fisiologici (Sola Lettura) */}
+            <div className="bg-white/5 rounded-xl p-4">
+              <p className="text-sm font-medium text-foreground mb-4 flex items-center justify-between">
+                <span>Parametri Fisiologici</span>
+                {profileMissing && <AlertTriangle className="w-4 h-4 text-yellow-400" />}
+              </p>
+              
+              {profileLoading ? (
+                <p className="text-xs text-foreground-muted animate-pulse">Caricamento in corso...</p>
+              ) : profileError ? (
+                <p className="text-xs text-red-400">{profileError}</p>
+              ) : (
+                <div className="grid grid-cols-3 gap-2 text-center mb-2">
+                  <div className="bg-black/20 rounded-lg py-2 border border-white/5">
+                    <p className="text-[10px] text-foreground-muted uppercase tracking-wider">Altezza</p>
+                    <p className="text-sm font-semibold text-foreground">{altezzaCm ? `${altezzaCm} cm` : "—"}</p>
+                  </div>
+                  <div className="bg-black/20 rounded-lg py-2 border border-white/5">
+                    <p className="text-[10px] text-foreground-muted uppercase tracking-wider">Peso</p>
+                    <p className="text-sm font-semibold text-foreground">{pesoKg ? `${pesoKg} kg` : "—"}</p>
+                  </div>
+                  <div className="bg-black/20 rounded-lg py-2 border border-white/5">
+                    <p className="text-[10px] text-foreground-muted uppercase tracking-wider">Sesso</p>
+                    <p className="text-sm font-semibold text-foreground capitalize">{sesso ?? "—"}</p>
                   </div>
                 </div>
-                <a href={`tel:${emergencyContact.phone}`} className="px-4 py-2 bg-primary text-background rounded-xl font-medium text-sm">
-                  Chiama
-                </a>
-              </div>
-            </div> */}
+              )}
 
-            {/* Quick Actions */}
-            {/* <div className="grid grid-cols-2 gap-3">
-              <a
-                href="tel:112"
-                className="bg-red-500/20 text-red-500 rounded-xl p-3 text-center font-medium text-sm flex items-center justify-center gap-2"
-              >
-                <Phone className="w-4 h-4" />
-                Emergenza 112
-              </a>
-              <button className="bg-primary/20 text-primary rounded-xl p-3 text-center font-medium text-sm flex items-center justify-center gap-2">
-                <Bell className="w-4 h-4" />
-                Alert Amici
-              </button>
-            </div> */}
+              {profileMissing && (
+                <div className="mt-4 p-3 bg-yellow-400/10 border border-yellow-400/20 rounded-lg">
+                  <p className="text-xs text-yellow-400 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span>Completa il profilo su AlterVista per abilitare il calcolo accurato del tasso alcolemico.</span>
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

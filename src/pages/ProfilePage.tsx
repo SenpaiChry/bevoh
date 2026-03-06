@@ -737,77 +737,76 @@ export default function ProfilePage() {
       )} */}
 
       {/* Range Drink Summary (24hr/week/month/all) */}
-      <section className="bg-card rounded-3xl p-3 mb-4">
-        {/* Header con frecce + titolo */}
-        <div className="flex items-center justify-between mb-3">
-          <button
-            type="button"
-            onClick={() => setRangeIdx((p) => (p - 1 + RANGE_TABS.length) % RANGE_TABS.length)}
-            className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center"
-            aria-label="Previous range"
-          >
-            {/* puoi usare ChevronRight ruotato oppure un altro icon, io uso ChevronRight con rotate */}
-            <ChevronRight className="w-5 h-5 text-foreground-muted rotate-180" />
-          </button>
+      <section className="bg-card rounded-3xl p-5 mb-4 border border-white/5 shadow-lg">
 
-          <div className="text-center">
-            <p className="text-xs text-foreground-muted uppercase tracking-wide">Drink Summary</p>
-            <p className="text-lg font-semibold text-foreground">{RANGE_TABS[rangeIdx].label.toUpperCase()}</p>
+        {/* Titolo e Range Selector (Stile compatto coerente) */}
+        <div className="flex flex-col items-center justify-center mb-6">
+          <h2 className="text-[20px] font-bold text-foreground-muted uppercase tracking-widest mb-3">
+            Drink Summary
+          </h2>
+          <div className="flex items-center justify-between w-full bg-black/20 p-1.5 rounded-2xl border border-white/5">
+            <button
+              type="button"
+              onClick={() => setRangeIdx((p) => (p - 1 + RANGE_TABS.length) % RANGE_TABS.length)}
+              className="h-8 w-10 rounded-xl hover:bg-white/10 transition flex items-center justify-center"
+              aria-label="Previous range"
+            >
+              <ChevronRight className="w-4 h-4 text-foreground-muted rotate-180" />
+            </button>
+            <p className="text-sm font-bold text-primary tracking-widest uppercase">
+              {RANGE_TABS[rangeIdx].label}
+            </p>
+            <button
+              type="button"
+              onClick={() => setRangeIdx((p) => (p + 1) % RANGE_TABS.length)}
+              className="h-8 w-10 rounded-xl hover:bg-white/10 transition flex items-center justify-center"
+              aria-label="Next range"
+            >
+              <ChevronRight className="w-4 h-4 text-foreground-muted" />
+            </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setRangeIdx((p) => (p + 1) % RANGE_TABS.length)}
-            className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center"
-            aria-label="Next range"
-          >
-            <ChevronRight className="w-5 h-5 text-foreground-muted" />
-          </button>
         </div>
 
-        {/* Totale + categorie */}
-        <div className="grid grid-cols-10 gap-3 items-stretch">
-          {/* Totale a sinistra */}
-          <div className="col-span-4 bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center text-center">
-            <p className="text-xs text-foreground-muted mb-1">Total</p>
-            <div className="text-5xl font-bold text-foreground leading-none">{rangeTotal}</div>
+        {/* Griglia Dati */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Totale Evidenziato */}
+          <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex flex-col items-center justify-center sm:col-span-1">
+            <p className="text-[10px] text-primary/80 font-bold mb-1 uppercase tracking-wider">Total</p>
+            <p className="text-5xl font-black text-primary">{rangeTotal}</p>
           </div>
 
-          {/* Categorie a destra */}
-          <div className="col-span-6 grid grid-cols-2 gap-2">
-            <div className="bg-white/5 rounded-2xl p-3 text-center">
+          {/* Sottocategorie */}
+          <div className="grid grid-cols-2 gap-3 sm:col-span-2">
+            <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center transition-colors hover:bg-white/10">
               <p className="text-2xl font-bold text-foreground">{rangeCounts.cocktail}</p>
-              <p className="text-xs text-foreground-muted">Cocktails</p>
+              <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Cocktails</p>
             </div>
-
-            <div className="bg-white/5 rounded-2xl p-3 text-center">
+            <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center transition-colors hover:bg-white/10">
               <p className="text-2xl font-bold text-foreground">{rangeCounts.beer}</p>
-              <p className="text-xs text-foreground-muted">Beer</p>
+              <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Beer</p>
             </div>
-
-            <div className="bg-white/5 rounded-2xl p-3 text-center">
+            <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center transition-colors hover:bg-white/10">
               <p className="text-2xl font-bold text-foreground">{rangeCounts.shot}</p>
-              <p className="text-xs text-foreground-muted">Shots</p>
+              <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Shots</p>
             </div>
-
-            <div className="bg-white/5 rounded-2xl p-3 text-center">
+            <div className="bg-white/5 rounded-2xl p-3 text-center border border-white/5 flex flex-col justify-center transition-colors hover:bg-white/10">
               <p className="text-2xl font-bold text-foreground">{rangeCounts.wine}</p>
-              <p className="text-xs text-foreground-muted">Wine</p>
+              <p className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">Wine</p>
             </div>
           </div>
         </div>
-        <div className="mt-3">
+
+        {/* Azione (CTA) */}
+        <div className="mt-4">
           <button
             type="button"
-            onClick={() => {
-              window.location.href = "/mylogs"
-            }}
-            className="w-full bg-white/10 hover:bg-white/15 transition rounded-2xl p-3 flex items-center justify-between"
+            onClick={() => window.location.href = "/mylogs"}
+            className="w-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all rounded-2xl p-3.5 flex items-center justify-center gap-2 group"
           >
-            <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">View my logs</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-foreground-muted" />
+            <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+              View detailed logs
+            </span>
+            <ChevronRight className="w-4 h-4 text-foreground-muted group-hover:text-primary transition-colors" />
           </button>
         </div>
       </section>
