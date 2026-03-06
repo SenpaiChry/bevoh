@@ -7,6 +7,7 @@ import { loadMe } from "@/controllers/UserController"
 import SafetyCard from "@/components/SafetyCard"
 import { logout } from "@/controllers/UserController"
 import { useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 interface Achievement {
   id: string
@@ -167,6 +168,8 @@ const AVATAR_PRESETS = [
 
 
 export default function ProfilePage() {
+  const navigate = useNavigate()
+
   const RANGE_TABS = [
     { key: "24h", label: "24hr" },
     { key: "7d", label: "week" },
@@ -350,7 +353,7 @@ export default function ProfilePage() {
       setLogoutError(null)
       await logout()
       await queryClient.invalidateQueries({ queryKey: ["me"] })
-      window.location.href = "/auth"
+      navigate("/auth", { replace: true })
     } catch (e: any) {
       setLogoutError(e?.message || "Errore logout")
     } finally {
@@ -786,13 +789,8 @@ export default function ProfilePage() {
           </div>
         </div>
         <div className="mt-3">
-          <button
-            type="button"
-            onClick={() => {
-              window.location.href = "/mylogs"
-            }}
-            className="w-full bg-white/10 hover:bg-white/15 transition rounded-2xl p-3 flex items-center justify-between"
-          >
+          <button type="button" onClick={() => navigate("/mylogs")}
+            className="w-full bg-white/10 hover:bg-white/15 transition rounded-2xl p-3 flex items-center justify-between" >
             <div className="text-left">
               <p className="text-sm font-semibold text-foreground">View my logs</p>
             </div>

@@ -7,6 +7,8 @@ import { StarRating } from "./StarRating"
 import { YesNoModal } from "./YesNoModal"
 import { EditReviewModal } from "./EditReviewModal"
 import { ReviewModel } from "@/models/review-models"
+import { loadMeSafe } from "@/controllers/UserController"
+import { useQuery } from "@tanstack/react-query"
 
 function clampRating(n: number) {
   const x = Number.isFinite(n) ? n : 0
@@ -47,7 +49,6 @@ export default function DrinkDetailPage() {
 
     getDrink(controller.signal)
     getDrinkReviews(controller.signal)
-    loadMe(controller.signal)
 
     return () => controller.abort()
   }, [id])
@@ -60,11 +61,6 @@ export default function DrinkDetailPage() {
 
       const json = await res.json()
       if (!json?.ok) throw new Error(json?.error || "Errore API")
-
-      // La tua API ritorna { "0": {...}, "ok": true } quindi estraggo tutte le keys numeriche
-      const rows = Object.keys(json)
-        .filter((k) => /^\d+$/.test(k))
-        .map((k) => json[k])
 
       const payload = json.data
 
@@ -82,8 +78,6 @@ export default function DrinkDetailPage() {
     }
   }
 
-  const [myUserId, setMyUserId] = useState<number | null>(null)
-
   const [reviews, setReviews] = useState<ReviewModel[]>([])
   const [isPostingReview, setIsPostingReview] = useState(false)
   const [reviewError, setReviewError] = useState<string | null>(null)
@@ -98,6 +92,19 @@ export default function DrinkDetailPage() {
   const [editTarget, setEditTarget] = useState<ReviewModel | null>(null)
   const [isUpdating, setIsUpdating] = useState(false)
   const [updateError, setUpdateError] = useState<string | null>(null)
+
+  const meQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: loadMeSafe,
+    retry: false,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  })
+
+  const myUserId = meQuery.data?.ok ? meQuery.data.user.Id : null
+  const isLogged = myUserId !== null
 
   async function updateReview(reviewId: number | string, description: string, vote: number) {
     setIsUpdating(true)
@@ -158,22 +165,6 @@ export default function DrinkDetailPage() {
       setDeleteError(e?.message || "Network error")
     } finally {
       setIsDeleting(false)
-    }
-  }
-
-  async function loadMe(signal?: AbortSignal) {
-    try {
-      const res = await fetch(`${API_BASE}/auth/me.php`, {
-        credentials: "include",
-        signal,
-      })
-
-      const json = await res.json()
-      if (json?.ok) {
-        setMyUserId(json.user.Id)
-      }
-    } catch (e) {
-      console.log(e)
     }
   }
 
@@ -388,32 +379,34 @@ export default function DrinkDetailPage() {
               </div>
 
               {/* Add review */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-12 gap-3">
-                <div className="md:col-span-6">
-                  <input
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Write a review..."
-                    className="w-full bg-background rounded-xl px-3 py-2 text-foreground border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  />
-                </div>
+              {isLogged ? (
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-12 gap-3">
+                  <div className="md:col-span-6">
+                    <input
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                      placeholder="Write a review..."
+                      className="w-full bg-background rounded-xl px-3 py-2 text-foreground border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </div>
 
-                <div className="md:col-span-3 flex items-center gap-2">
-                  <StarRating
-                    value={newReviewRating}
-                    onChange={setNewReviewRating}
-                  />
-                  {/* <span className="text-sm tabular-nums text-foreground-muted">
-                    {newReviewRating.toFixed(1)}
-                  </span> */}
-                </div>
+                  <div className="md:col-span-3 flex items-center gap-2">
+                    <StarRating value={newReviewRating} onChange={setNewReviewRating} />
+                  </div>
 
-                <div className="md:col-span-1">
-                  <Button onClick={addReview} className="w-full" disabled={isPostingReview || !text.trim()}>
-                    {isPostingReview ? "..." : "Add"}
-                  </Button>
+                  <div className="md:col-span-1">
+                    <Button onClick={addReview} className="w-full" disabled={isPostingReview || !text.trim()}>
+                      {isPostingReview ? "..." : "Add"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-4 bg-background rounded-2xl border border-white/10 p-4">
+                  <p className="text-sm text-foreground-muted">
+                    Log in to add a review.
+                  </p>
+                </div>
+              )}
 
               {reviewError ? (
                 <p className="mt-3 text-sm text-red-500">{reviewError}</p>

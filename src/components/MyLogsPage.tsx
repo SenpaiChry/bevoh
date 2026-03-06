@@ -34,15 +34,6 @@ type DrinkLogsStatsResponse =
     }
     | { ok: false; error: string }
 
-function normalizeCategory(cat: string | null | undefined): "cocktail" | "beer" | "shot" | "wine" | "other" {
-    const c = (cat ?? "").trim().toLowerCase()
-    if (c.includes("cocktail")) return "cocktail"
-    if (c.includes("beer") || c.includes("birra")) return "beer"
-    if (c.includes("shot") || c.includes("shottino")) return "shot"
-    if (c.includes("wine") || c.includes("vino")) return "wine"
-    return "other"
-}
-
 const RANGE_TABS = [
     { key: "24h", label: "24hr" },
     { key: "7d", label: "week" },
@@ -237,7 +228,7 @@ export default function MyLogsPage() {
             // aggiorna anche counts (best-effort) in base alla categoria del log eliminato
             const removed = items.find((x) => x.Id === id)
             if (removed) {
-                const cat = normalizeCategory(removed.CategoryName)
+                const cat = removed.CategoryName
                 setStatsCounts((p) => ({
                     ...p,
                     [cat]: Math.max(0, Number((p as any)[cat] ?? 0) - 1),
@@ -303,7 +294,7 @@ export default function MyLogsPage() {
         } finally {
             listLoadingRef.current = false
             setListLoading(false)
-            setDidFirstFetch(true) // ✅ importante: almeno 1 fetch finito
+            setDidFirstFetch(true)
         }
     }
 
@@ -394,11 +385,8 @@ export default function MyLogsPage() {
 
                 {/* TOP — back to profile */}
                 <div className="flex items-center">
-                    <button
-                        type="button"
-                        onClick={() => navigate("/profile")}
-                        className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition text-sm text-foreground"
-                    >
+                    <button type="button" onClick={() => navigate("/profile")}
+                        className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 transition text-sm text-foreground" >
                         ← Back to profile
                     </button>
                 </div>
@@ -467,14 +455,13 @@ export default function MyLogsPage() {
             {/* List */}
             <div className="space-y-2">
                 {items.map((it) => {
-                    const cat = normalizeCategory(it.CategoryName)
                     return (
                         <div key={it.Id} className="bg-card rounded-2xl p-3 flex gap-3">
                             <div className="w-14 h-14 rounded-2xl bg-white/5 overflow-hidden flex items-center justify-center shrink-0">
                                 {it.DrinkImageUrl ? (
                                     <img src={it.DrinkImageUrl} alt={it.DrinkName ?? "Drink"} className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="text-xs text-foreground-muted">{cat}</div>
+                                    <div className="text-xs text-foreground-muted">{it.CategoryName}</div>
                                 )}
                             </div>
 

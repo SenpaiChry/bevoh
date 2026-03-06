@@ -4,6 +4,7 @@ import { Search, Filter, X, Heart } from "lucide-react"
 import { DrinkModel } from "@/models/drinks-models"
 import { Slider } from "@/components/ui/slider"
 import { CategoryModel } from "@/models/category-models"
+import { loadMeSafe } from "@/controllers/UserController"
 
 const API_BASE = "https://bevoh.altervista.org/api"
 const CATEGORY_FALLBACK_IMG = "/assets/drinks/illegal.jpg"
@@ -61,6 +62,7 @@ function Switch({
 }
 
 export default function MenuDrinksPage() {
+  const [isLogged, setIsLogged] = useState(false)
   const [drinks, setDrinks] = useState<DrinkModel[]>([])
   const [search, setSearch] = useState("")
   const [showFilters, setShowFilters] = useState(false)
@@ -244,10 +246,28 @@ export default function MenuDrinksPage() {
   // initial load
   React.useEffect(() => {
     const controller = new AbortController()
-    getCategories(controller.signal)
-    getFavouriteDrinks(controller.signal)
+
+      ; (async () => {
+        getCategories(controller.signal)
+
+        const me = await loadMeSafe()
+        const logged = me.ok === true
+        setIsLogged(logged)
+
+        if (logged) {
+          getFavouriteDrinks(controller.signal)
+        } else {
+          setFavorites({})
+          setOnlyFavorites(false)
+        }
+      })()
+
     return () => controller.abort()
   }, [])
+
+  React.useEffect(() => {
+    if (!isLogged && onlyFavorites) setOnlyFavorites(false)
+  }, [isLogged, onlyFavorites])
 
   // refetch drinks when category changes
   // (and when search changes: with pagination, it's better server-side)
@@ -451,7 +471,7 @@ export default function MenuDrinksPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:col-span-2">
-                  <Switch checked={onlyFavorites} onChange={setOnlyFavorites} label="Favorites" />
+                  {isLogged && <Switch checked={onlyFavorites} onChange={setOnlyFavorites} label="Favorites" />}
                   <Switch checked={onlyIba} onChange={setOnlyIba} label="IBA" />
                 </div>
               </div>
@@ -499,14 +519,16 @@ export default function MenuDrinksPage() {
                         )}
 
                         {/* ❤️ HEART */}
-                        <button
-                          onClick={onToggleWishlist}
-                          className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/55 backdrop-blur border border-white/20 text-white hover:bg-black/70 transition-colors"
-                          aria-label={wishlisted ? "Remove from favorites" : "Add to favorites"}
-                          title={wishlisted ? "Remove from favorites" : "Add to favorites"}
-                        >
-                          <Heart size={18} className={wishlisted ? "fill-white" : ""} />
-                        </button>
+                        {isLogged && (
+                          <button
+                            onClick={onToggleWishlist}
+                            className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/55 backdrop-blur border border-white/20 text-white hover:bg-black/70 transition-colors"
+                            aria-label={wishlisted ? "Remove from favorites" : "Add to favorites"}
+                            title={wishlisted ? "Remove from favorites" : "Add to favorites"}
+                          >
+                            <Heart size={18} className={wishlisted ? "fill-white" : ""} />
+                          </button>
+                        )}
 
                         {/* BOTTOM OVERLAY */}
                         <div className="absolute inset-x-0 bottom-0 z-10">
