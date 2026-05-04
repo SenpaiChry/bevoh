@@ -29,10 +29,12 @@ const Header = () => {
 
   const menuTabs: MenuTabModel[] = useMemo(() => {
     const all = getMenuTabs().filter((x) => x.header)
-    if (me == null) return all.filter((x) => !x.auth)
-    return all.filter((x) => x.name.toLowerCase() !== "login")
-  }, [me])
 
+    if (me === null) return all.filter((x) => !x.auth)
+    if (me.Role === "ADMIN") return all.filter((x) => x.admin)
+    return all.filter((x) => x.name != "Login" && !x.admin)
+  }, [me])
+  
   const avatarSrc = useMemo(() => {
     if (!me?.ImageUrl) return FALLBACK_AVATAR
     const url = me.ImageUrl.trim()

@@ -10,4 +10,5 @@ export interface MenuTabModel {
     mobile?: boolean
     auth?: boolean
     header?: boolean
+    admin?: boolean
 }

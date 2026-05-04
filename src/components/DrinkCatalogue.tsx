@@ -27,40 +27,6 @@ function getDrinkRating(d: DrinkModel): number {
   return clampRating(Number(raw ?? 0))
 }
 
-function Switch({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean
-  onChange: (v: boolean) => void
-  label: string
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 bg-background rounded-xl px-3 py-2 border border-white/10">
-      <p className="text-sm text-foreground">{label}</p>
-      <button
-        type="button"
-        onClick={() => onChange(!checked)}
-        className={[
-          "relative w-11 h-6 rounded-full transition-colors shrink-0",
-          checked ? "bg-primary/60" : "bg-white/10",
-        ].join(" ")}
-        aria-pressed={checked}
-        aria-label={label}
-        title={label}
-      >
-        <span
-          className={[
-            "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform",
-            checked ? "translate-x-5" : "translate-x-0",
-          ].join(" ")}
-        />
-      </button>
-    </div>
-  )
-}
-
 export default function MenuDrinksPage() {
   const [isLogged, setIsLogged] = useState(false)
   const [drinks, setDrinks] = useState<DrinkModel[]>([])
@@ -73,7 +39,6 @@ export default function MenuDrinksPage() {
   const [activeCategory, setActiveCategory] = useState<number | null>(null)
   const [ratingRange, setRatingRange] = useState<[number, number]>([0, 5])
   const [onlyFavorites, setOnlyFavorites] = useState(false)
-  const [onlyIba, setOnlyIba] = useState(false)
 
   const listRef = useRef<HTMLDivElement | null>(null)
 
@@ -328,7 +293,6 @@ export default function MenuDrinksPage() {
     })
 
     if (onlyFavorites) base = base.filter((d) => !!favorites[d.Id])
-    if (onlyIba) base = base.filter((d) => !!(d as any).iba)
 
     // ✅ rating sort (real rating)
     base.sort((a, b) => {
@@ -339,13 +303,12 @@ export default function MenuDrinksPage() {
     })
 
     return base
-  }, [drinks, search, ratingRange, onlyFavorites, onlyIba, favorites])
+  }, [drinks, search, ratingRange, onlyFavorites, favorites])
 
   const resetFilters = () => {
     setActiveCategory(null)
     setRatingRange([0, 5])
     setOnlyFavorites(false)
-    setOnlyIba(false)
   }
 
   const clearSearch = () => setSearch("")
@@ -469,11 +432,6 @@ export default function MenuDrinksPage() {
                     <span>5.0</span>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:col-span-2">
-                  {isLogged && <Switch checked={onlyFavorites} onChange={setOnlyFavorites} label="Favorites" />}
-                  <Switch checked={onlyIba} onChange={setOnlyIba} label="IBA" />
-                </div>
               </div>
             </div>
           </section>
@@ -563,7 +521,7 @@ export default function MenuDrinksPage() {
                 })}
               </div>
 
-              <div ref={loadMoreRef} className="h-10" />
+              <div ref={loadMoreRef} className="" />
 
               {listLoading && <div className="mt-4 text-center text-sm text-foreground-muted">Loading more...</div>}
             </>

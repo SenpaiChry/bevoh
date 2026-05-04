@@ -1,4 +1,4 @@
-import { Home, Trophy, PlusSquare, Users, User, Wine, History } from "lucide-react"
+import { Home, Trophy, PlusSquare, Users, User, Wine, History, Gamepad2, Martini, LogOut, ListFilter } from "lucide-react"
 import { Friend, FriendsFeed, Group } from "../models/friend-models"
 import { DrinkSession } from "../models/history-models"
 import { LeaderboardEntry } from "../models/leaderboard-models"
@@ -91,9 +91,13 @@ const iconMap = {
   trophy: Trophy,
   plus: PlusSquare,
   users: Users,
+  games: Gamepad2,
   user: User,
-  drink: Wine,
-  history: History
+  // drink: Wine,
+  drink: Martini,
+  history: History,
+  logOut: LogOut,
+  list: ListFilter
 } as const
 export const getMenuTabs = (): MenuTabModel[] => {
   return menuData
@@ -107,6 +111,7 @@ export const getMenuTabs = (): MenuTabModel[] => {
     mobile: t.mobile,
     auth: t.auth,
     header: t.header,
+    admin: t.admin,
     icon: iconMap[t.icon as keyof typeof iconMap]
   }))
 }

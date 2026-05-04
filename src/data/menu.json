@@ -1,10 +1,19 @@
 [
-  { "order": 1,   "name": "Home",         "href": "/",            "icon": "home",   "mobile": true,   "auth": true,   "header": false },
-  { "order": 2,   "name": "Leaderboard",  "href": "/leaderboard", "icon": "trophy", "mobile": false,  "auth": true,   "header": false },
-  { "order": 3,   "name": "Drinks",       "href": "/drinks",      "icon": "drink",  "mobile": true,   "auth": false,  "header": true },
-  { "order": 6,   "name": "History",      "href": "/history",     "icon": "history","mobile": false,  "auth": true,   "header": false },
-  { "order": 50,  "name": "Add Drink",    "href": "/add",         "icon": "plus",   "mobile": true,   "auth": true,   "header": true,   "isCenter": true },
-  { "order": 60,  "name": "Friends",      "href": "/friends",     "icon": "users",  "mobile": true,   "auth": true,   "header": true },
-  { "order": 70,  "name": "Login",        "href": "/auth",        "icon": "users",  "mobile": true,   "auth": false,  "header": true },
-  { "order": 100, "name": "Profile",      "href": "/profile",     "icon": "user",   "mobile": true,   "auth": true,   "header": true,   "isProfile": true }
+  { "order": 0,   "name": "Friends",      "href": "/friends",     "icon": "",       "mobile": false,  "auth": true,   "header": false,  "admin": false },
+  { "order": 0,   "name": "Groups",       "href": "/groups",      "icon": "",       "mobile": false,  "auth": true,   "header": false,  "admin": false },
+  { "order": 1,   "name": "Home",         "href": "/",            "icon": "home",   "mobile": true,   "auth": true,   "header": true,   "admin": false },
+  { "order": 2,   "name": "Leaderboard",  "href": "/leaderboard", "icon": "trophy", "mobile": false,  "auth": true,   "header": false,  "admin": false },
+  { "order": 3,   "name": "Drinks",       "href": "/drinks",      "icon": "drink",  "mobile": true,   "auth": false,  "header": true,   "admin": false },
+  { "order": 6,   "name": "History",      "href": "/history",     "icon": "history","mobile": false,  "auth": true,   "header": false,  "admin": false },
+  { "order": 50,  "name": "Add Drink",    "href": "/add",         "icon": "plus",   "mobile": true,   "auth": true,   "header": true,   "admin": false, "isCenter": true },
+  { "order": 60,  "name": "Games",        "href": "/games",       "icon": "games",  "mobile": true,   "auth": false,  "header": true,   "admin": false },
+  { "order": 70,  "name": "Login",        "href": "/auth",        "icon": "users",  "mobile": true,   "auth": false,  "header": true,   "admin": false },
+  { "order": 100, "name": "Profile",      "href": "/profile",     "icon": "user",   "mobile": true,   "auth": true,   "header": true,   "admin": false,  "isProfile": true },
+  { "order": 100, "name": "Edit Profile", "href": "/editprofile", "icon": "user",   "mobile": false,  "auth": true,   "header": false,  "admin": false },
+  
+
+  { "order": 1000, "name": "Manage drinks",       "href": "/adminDrinks",       "icon": "drink",  "mobile": true,   "auth": true,   "header": true,  "admin": true },
+  { "order": 1010, "name": "Manage ingredients",  "href": "/adminIngredients",  "icon": "list",   "mobile": true,   "auth": true,   "header": true,  "admin": true },
+  { "order": 2000, "name": "Logout",              "href": "/adminLogout",       "icon": "logOut", "mobile": true,   "auth": true,   "header": true,  "admin": true }
+  
 ]

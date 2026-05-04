@@ -5,7 +5,7 @@ import { Search, UserPlus, MoreHorizontal, Users, Plus, MapPin, Clock, Heart, Me
 import { Friend, FriendsFeed, Group } from "../models/friend-models"
 import { getFriends, getFriendsFeed, getFriendsGroups } from "./ReadData"
 
-export default function FriendsPage() {
+export default function GamesPage() {
   const [friends, setFriends] = useState<Friend[]>([])
   const [groups, setGroups] = useState<Group[]>([])
   const [feed, setFeed] = useState<FriendsFeed[]>([])
@@ -39,8 +39,11 @@ export default function FriendsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 bg-background/95 backdrop-blur-lg z-10 px-5 pt-6 pb-4 lg:px-8 border-b border-white/5">
+
+      TO DO - GAMES PAGE
+
+
+      {/* <header className="sticky top-0 bg-background/95 backdrop-blur-lg z-10 px-5 pt-6 pb-4 lg:px-8 border-b border-white/5">
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-2xl font-bold text-foreground">Social</h1>
           <button className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
@@ -48,7 +51,6 @@ export default function FriendsPage() {
           </button>
         </div>
 
-        {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-foreground-muted" />
           <input
@@ -125,7 +127,6 @@ export default function FriendsPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-4 pt-3 border-t border-white/5">
                   <button onClick={() => toggleLike(activity.id)} className="flex items-center gap-2 text-sm">
                     <Heart
@@ -145,7 +146,6 @@ export default function FriendsPage() {
           </div>
         )}
 
-        {/* Friends Tab Content */}
         {activeTab === "friends" && (
           <div className="space-y-3">
             {filteredFriends.map((friend) => (
@@ -190,7 +190,6 @@ export default function FriendsPage() {
 
         {activeTab === "groups" && (
           <div className="space-y-3">
-            {/* Create Group Button */}
             <button className="w-full bg-primary/10 border-2 border-dashed border-primary/30 rounded-2xl p-4 flex items-center justify-center gap-3 hover:bg-primary/20 transition-colors">
               <Plus className="w-5 h-5 text-primary" />
               <span className="font-medium text-primary">Create New Group</span>
@@ -221,7 +220,6 @@ export default function FriendsPage() {
                   <ChevronRight className="w-5 h-5 text-foreground-muted" />
                 </div>
 
-                {/* Member Avatars */}
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
                   <div className="flex -space-x-2">
                     {group.members.slice(0, 4).map((member, i) => (
@@ -249,7 +247,7 @@ export default function FriendsPage() {
             ))}
           </div>
         )}
-      </main>
+      </main> */}
     </div>
   )
 }

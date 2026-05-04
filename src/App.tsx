@@ -8,9 +8,6 @@ import Header from "./components/Header";
 import ProfilePage from "./pages/ProfilePage";
 import AddDrinkPage from "./components/AddDrink";
 import HomePage from "./components/Home";
-import LeaderboardPage from "./components/Leaderboard";
-import FriendsPage from "./components/Friends";
-import HistoryPage from "./components/History";
 import MenuMobile from "./components/MenuMobile";
 import MenuDrinksPage from "./components/DrinkCatalogue";
 import DrinkDetailPage from "./components/DrinkDetailPage";
@@ -18,6 +15,15 @@ import AuthPage from "./components/Auth";
 import RequireAuth from "./RequireAuth";
 import MyLogsPage from "./components/MyLogsPage";
 import RequireAdmin from "./RequireAdmin";
+import FriendsPage from "./components/FriendsPage";
+import GroupsPage from "./components/GroupsPage";
+import DrinksAdminPage from "./components/DrinksAdminPage";
+import IngredientsAdminPage from "./components/IngredientAdminPage";
+import AdminLogoutPage from "./components/AdminLogoutPage";
+import EditProfilePage from "./components/EditProfilePage";
+import GamesPage from "./components/Games/GamesPage";
+import NBAPredictor from "./components/TESTCLAUDE/NBAPredictor";
+import NBAPredictorPython from "./components/TESTCLAUDE/NBAPredictorPython";
 
 const queryClient = new QueryClient();
 
@@ -34,20 +40,29 @@ const App = () => (
           <Routes>
             {/* AUTH - USER */}
             <Route path="/" element={<RequireAuth><HomePage /></RequireAuth>} />
-            <Route path="/leaderboard" element={<RequireAuth><LeaderboardPage /></RequireAuth>} />
+            {/* <Route path="/leaderboard" element={<RequireAuth><LeaderboardPage /></RequireAuth>} /> */}
             <Route path="/add" element={<RequireAuth><AddDrinkPage /></RequireAuth>} />
-            <Route path="/history" element={<RequireAuth><HistoryPage /></RequireAuth>} />
+            {/* <Route path="/history" element={<RequireAuth><HistoryPage /></RequireAuth>} /> */}
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+            <Route path="/editprofile" element={<RequireAuth><EditProfilePage /></RequireAuth>} />
             <Route path="/mylogs" element={<RequireAuth><MyLogsPage /></RequireAuth>} />
             <Route path="/friends" element={<RequireAuth><FriendsPage /></RequireAuth>} />
+            <Route path="/sessions" element={<RequireAuth><GroupsPage /></RequireAuth>} />
 
             {/* AUTH - ADMIN */}
-            {/* <Route path="/friends" element={<RequireAdmin><FriendsPage /></RequireAdmin>} /> */}
+            <Route path="/adminDrinks" element={<RequireAdmin><DrinksAdminPage /></RequireAdmin>} />
+            <Route path="/adminIngredients" element={<RequireAdmin><IngredientsAdminPage /></RequireAdmin>} />
+            <Route path="/adminLogout" element={<RequireAdmin><AdminLogoutPage /></RequireAdmin>} />
 
             {/* PUBLICS */}
+            <Route path="/games" element={<GamesPage />} />
             <Route path="/drinks" element={<MenuDrinksPage />} />
             <Route path="/drink/:id" element={<DrinkDetailPage />} />
             <Route path="/auth" element={<AuthPage />} />
+
+            {/* CLAUDE */}
+            <Route path="/NBAPRED" element={<NBAPredictor />} />
+            <Route path="/NBA" element={<NBAPredictorPython />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

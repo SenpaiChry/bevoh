@@ -26,11 +26,20 @@ const MenuMobile = () => {
 
   const menuTabs: MenuTabModel[] = useMemo(() => {
     const all = getMenuTabs().filter((x) => x.mobile)
-    if (!isLoggedIn) {
-      return all.filter((x) => !x.auth)
-    }
-    return all.filter((x) => x.name.toLowerCase() !== "login")
+
+    if (!isLoggedIn) return all.filter((x) => !x.auth)
+    if (me.Role === "ADMIN") return all.filter((x) => x.admin)
+
+    return all.filter((x) => x.name.toLowerCase() !== "login" && !x.admin)
   }, [isLoggedIn])
+
+  // const menuTabs: MenuTabModel[] = useMemo(() => {
+  //   const all = getMenuTabs().filter((x) => x.mobile)
+
+  //   if (me === null) return all.filter((x) => !x.auth)
+  //   if (me.Role === "ADMIN") return all.filter((x) => x.admin)
+  //   return all.filter((x) => x.auth && !x.admin)
+  // }, [me])
 
   const avatarSrc = useMemo(() => {
     if (!me?.ImageUrl) return FALLBACK_AVATAR

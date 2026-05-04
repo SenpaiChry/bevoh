@@ -3,6 +3,7 @@ import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AuthModel } from "@/models/auth-models"
+import logo from "@/assets/logo/bevoh_logo.png"
 
 const API_BASE = "https://bevoh.altervista.org/api"
 
@@ -149,11 +150,7 @@ export default function AuthPage() {
       {/* Left Side - Branding (Desktop) */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative z-10 flex-col justify-center px-12 xl:px-20">
         <div>
-          <img
-            src={"/bevoh_logo.png"}
-            alt="BEVOH"
-            className="w-80 max-h-[25vh] object-contain mb-16"
-          />
+          <img src={logo} alt="BEVOH" className="w-80 max-h-[25vh] object-contain mb-16" />
           <p className="text-xl text-muted-foreground mb-8 max-w-md leading-relaxed">
             Track your drinks, compete with friends, and make every night memorable.
           </p>
@@ -178,11 +175,7 @@ export default function AuthPage() {
         {/* Mobile Logo */}
         <div className="lg:hidden mb-8 text-center">
           <div className="w-56 flex items-center justify-center mx-auto mt-4">
-            <img
-              src={"/bevoh_logo.png"}
-              alt="BEVOH"
-              className="w-full max-h-[75vh] object-contain"
-            />
+            <img src={logo} alt="BEVOH" className="w-full max-h-[75vh] object-contain" />
           </div>
         </div>
 
@@ -191,10 +184,7 @@ export default function AuthPage() {
           <div className="p-2 lg:p-8">
             {/* Toggle Tabs */}
             <div className="flex gap-2 bg-secondary rounded-xl p-1 mb-6">
-              <button
-                type="button"
-                onClick={() => handleModeSwitch("login")}
-                disabled={isLoading}
+              <button type="button" onClick={() => handleModeSwitch("login")} disabled={isLoading}
                 className={`flex-1 py-3 lg:py-3.5 rounded-lg text-sm z-50 lg:text-base font-medium transition-all duration-200 ${mode === "login"
                   ? "bg-primary text-primary-foreground shadow-lg"
                   : "text-muted-foreground hover:text-foreground"
@@ -202,10 +192,7 @@ export default function AuthPage() {
               >
                 Sign In
               </button>
-              <button
-                type="button"
-                onClick={() => handleModeSwitch("register")}
-                disabled={isLoading}
+              <button type="button" onClick={() => handleModeSwitch("register")} disabled={isLoading}
                 className={`flex-1 py-3 lg:py-3.5 rounded-lg text-sm z-50 lg:text-base font-medium transition-all duration-200 ${mode === "register"
                   ? "bg-primary text-primary-foreground shadow-lg"
                   : "text-muted-foreground hover:text-foreground"
